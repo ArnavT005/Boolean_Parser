@@ -32,24 +32,23 @@ val colinc = fn x str => (x := !x + String.size str)
 
 %header (functor booleanLexFun(structure Tokens: boolean_TOKENS));
 alpha = [A-Za-z];
-ws = [\ \t]
+ws = [\ \t];
 
 %%
 \n               => (lineNum := !lineNum + 1; columnNum := 1; lex());
 {ws}+            => (colinc columnNum yytext; lex());
-";"      		 => (colinc columnNum yytext; T.TERM(yypos, yypos + 1));
-"("				 => (colinc columnNum yytext; T.LPAREN(yypos, yypos + 1));
-")"				 => (colinc columnNum yytext; T.RPAREN(yypos, yypos + 1));
-"NOT"			 => (colinc columnNum yytext; T.NOT(yypos, yypos + 3));
-"AND"            => (colinc columnNum yytext; T.AND(yypos, yypos + 3));
-"OR"             => (colinc columnNum yytext; T.OR(yypos, yypos + 2));
-"XOR"			 => (colinc columnNum yytext; T.XOR(yypos, yypos + 3));
-"EQUALS"		 => (colinc columnNum yytext; T.EQUALS(yypos, yypos + 6));
-"IMPLIES"		 => (colinc columnNum yytext; T.IMPLIES(yypos, yypos + 7));
-"IF"			 => (colinc columnNum yytext; T.IF(yypos, yypos + 2));
-"THEN"           => (colinc columnNum yytext; T.THEN(yypos, yypos + 4));
-"ELSE"			 => (colinc columnNum yytext; T.ELSE(yypos, yypos + 4));
-"TRUE" | "FALSE" => (colinc columnNum yytext; T.CONST(yypos, yypos + String.size yytext);
+";"      		 => (append token_list "TERM" ";"; colinc columnNum yytext; T.TERM(yypos, yypos + 1));
+"("				 => (append token_list "LPAREN" "("; colinc columnNum yytext; T.LPAREN(yypos, yypos + 1));
+")"				 => (append token_list "RPAREN" ")"; colinc columnNum yytext; T.RPAREN(yypos, yypos + 1));
+"NOT"			 => (append token_list "NOT" "NOT"; colinc columnNum yytext; T.NOT(yypos, yypos + 3));
+"AND"            => (append token_list "AND" "AND"; colinc columnNum yytext; T.AND(yypos, yypos + 3));
+"OR"             => (append token_list "OR" "OR"; colinc columnNum yytext; T.OR(yypos, yypos + 2));
+"XOR"			 => (append token_list "XOR" "XOR"; colinc columnNum yytext; T.XOR(yypos, yypos + 3));
+"EQUALS"		 => (append token_list "EQUALS" "EQUALS"; colinc columnNum yytext; T.EQUALS(yypos, yypos + 6));
+"IMPLIES"		 => (append token_list "IMPLIES" "IMPLIES"; colinc columnNum yytext; T.IMPLIES(yypos, yypos + 7));
+"IF"			 => (append token_list "IF" "IF"; colinc columnNum yytext; T.IF(yypos, yypos + 2));
+"THEN"           => (append token_list "THEN" "THEN"; colinc columnNum yytext; T.THEN(yypos, yypos + 4));
+"ELSE"			 => (append token_list "ELSE" "ELSE"; colinc columnNum yytext; T.ELSE(yypos, yypos + 4));
+"TRUE" | "FALSE" => (append token_list "CONST" yytext; colinc columnNum yytext; T.CONST(yypos, yypos + String.size yytext);
 {alpha}+         => (colinc columnNum yytext; T.ID(yytext, yypos, yypos + String.size yytext);
 .                => (error lineNum columnNum yytext; colinc columnNum yytext; lex());
-
