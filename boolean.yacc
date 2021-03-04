@@ -6,23 +6,21 @@
 %term EOF | TERM | CONST | NOT | AND | OR | XOR | EQUALS | IMPLIES | IF | THEN | ELSE |
 	  LPAREN | RPAREN | ID of string
 
-%nonterm code_file | program | statement | conditional_formula | implicit_formula | binary_formula |
+%nonterm program | statement | conditional_formula | implicit_formula | binary_formula |
          not_formula | operand
 
 %pos int
 %eop EOF
 %noshift EOF
-%right THEN ELSE
-%right IF
+%right IF THEN ELSE
 %right IMPLIES
 %left EQUALS OR XOR AND
 %right NOT
-%start code_file
+%start program
 
 %verbose
 
 %%
-code_file: program ()
 program: statement ()
 		|program statement ()
 statement: conditional_formula TERM ()
