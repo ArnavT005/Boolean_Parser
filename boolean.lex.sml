@@ -11,7 +11,7 @@ type lexresult = (svalue, pos) token
 
 val lineNum = ref 1
 val columnNum = ref 1
-val token_list = ref []
+val token_list = ref ([]: string list)
 fun reverse(ls) = 
 	let fun rev_iter([], ls) = ls
 		|	rev_iter(x :: xs, ls) = rev_iter(xs, x :: ls)
@@ -26,11 +26,10 @@ fun secondaryPrint([]) = print ""
 fun printString([]) = print ""
 |	printString(ls) = 
 		(print (hd(ls) ^ " " ^ hd(tl(ls))); secondaryPrint(tl(tl(ls))));
-val error = 
-	fn x y str => 
-		TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(!x) ^ ":" ^ Int.toString(!y) ^ ":" ^ str ^ "\n")
-val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(yypos, yypos + String.size yytext))	
-val colinc = fn x str => (x := !x + String.size str)			   
+fun error(x, y, str) = 
+		TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toString(y) ^ ":" ^ str ^ "\n")
+val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(0, 0))	
+fun colinc(x, str) = (x := !x + String.size str)			   
 
 end (* end of user routines *)
 exception LexError (* raised if illegal leaf action tried *)
@@ -495,22 +494,22 @@ let fun continue() = lex() in
 			(* Application actions *)
 
   1 => (lineNum := !lineNum + 1; columnNum := 1; lex())
-| 10 => let val yytext=yymktext() in append token_list "RPAREN" ")"; colinc columnNum yytext; T.RPAREN(lineNum, !columnNum - 1) end
-| 14 => let val yytext=yymktext() in append token_list "NOT" "NOT"; colinc columnNum yytext; T.NOT(lineNum, !columnNum - 3) end
-| 18 => let val yytext=yymktext() in append token_list "AND" "AND"; colinc columnNum yytext; T.AND(lineNum, !columnNum - 3) end
-| 21 => let val yytext=yymktext() in append token_list "OR" "OR"; colinc columnNum yytext; T.OR(lineNum, !columnNum - 2) end
-| 25 => let val yytext=yymktext() in append token_list "XOR" "XOR"; colinc columnNum yytext; T.XOR(lineNum, !column - 3) end
-| 32 => let val yytext=yymktext() in append token_list "EQUALS" "EQUALS"; colinc columnNum yytext; T.EQUALS(lineNum, !columnNum - 6) end
-| 4 => let val yytext=yymktext() in colinc columnNum yytext; lex() end
-| 40 => let val yytext=yymktext() in append token_list "IMPLIES" "IMPLIES"; colinc columnNum yytext; T.IMPLIES(lineNum, !columnNum - 7) end
-| 43 => let val yytext=yymktext() in append token_list "IF" "IF"; colinc columnNum yytext; T.IF(lineNum, !columnNum - 2) end
-| 48 => let val yytext=yymktext() in append token_list "THEN" "THEN"; colinc columnNum yytext; T.THEN(lineNum, !columnNum - 4) end
-| 53 => let val yytext=yymktext() in append token_list "ELSE" "ELSE"; colinc columnNum yytext; T.ELSE(lineNum, !columnNum - 4) end
-| 6 => let val yytext=yymktext() in append token_list "TERM" ";"; colinc columnNum yytext; T.TERM(lineNum, !columnNum - 1) end
-| 63 => let val yytext=yymktext() in append token_list "CONST" yytext; colinc columnNum yytext; T.CONST(lineNum, !columnNum - String.size yytext) end
-| 66 => let val yytext=yymktext() in append token_list "ID" yytext; colinc columnNum yytext; T.ID(yytext, lineNum, !columnNum - String.size yytext) end
-| 68 => let val yytext=yymktext() in error lineNum columnNum yytext; colinc columnNum yytext; lex() end
-| 8 => let val yytext=yymktext() in append token_list "LPAREN" "("; colinc columnNum yytext; T.LPAREN(lineNum, !columnNum - 1) end
+| 10 => let val yytext=yymktext() in append token_list "RPAREN" ")"; colinc(columnNum, yytext); T.RPAREN(!lineNum, !columnNum - 1) end
+| 14 => let val yytext=yymktext() in append token_list "NOT" "NOT"; colinc(columnNum, yytext); T.NOT(!lineNum, !columnNum - 3) end
+| 18 => let val yytext=yymktext() in append token_list "AND" "AND"; colinc(columnNum, yytext); T.AND(!lineNum, !columnNum - 3) end
+| 21 => let val yytext=yymktext() in append token_list "OR" "OR"; colinc(columnNum, yytext); T.OR(!lineNum, !columnNum - 2) end
+| 25 => let val yytext=yymktext() in append token_list "XOR" "XOR"; colinc(columnNum, yytext); T.XOR(!lineNum, !columnNum - 3) end
+| 32 => let val yytext=yymktext() in append token_list "EQUALS" "EQUALS"; colinc(columnNum, yytext); T.EQUALS(!lineNum, !columnNum - 6) end
+| 4 => let val yytext=yymktext() in colinc(columnNum, yytext); lex() end
+| 40 => let val yytext=yymktext() in append token_list "IMPLIES" "IMPLIES"; colinc(columnNum, yytext); T.IMPLIES(!lineNum, !columnNum - 7) end
+| 43 => let val yytext=yymktext() in append token_list "IF" "IF"; colinc(columnNum, yytext); T.IF(!lineNum, !columnNum - 2) end
+| 48 => let val yytext=yymktext() in append token_list "THEN" "THEN"; colinc(columnNum, yytext); T.THEN(!lineNum, !columnNum - 4) end
+| 53 => let val yytext=yymktext() in append token_list "ELSE" "ELSE"; colinc(columnNum, yytext); T.ELSE(!lineNum, !columnNum - 4) end
+| 6 => let val yytext=yymktext() in append token_list "TERM" ";"; colinc(columnNum, yytext); T.TERM(!lineNum, !columnNum - 1) end
+| 63 => let val yytext=yymktext() in append token_list "CONST" yytext; colinc(columnNum, yytext); T.CONST(!lineNum, !columnNum - String.size yytext) end
+| 66 => let val yytext=yymktext() in append token_list "ID" yytext; colinc(columnNum, yytext); T.ID(yytext, !lineNum, !columnNum - String.size yytext) end
+| 68 => let val yytext=yymktext() in error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex() end
+| 8 => let val yytext=yymktext() in append token_list "LPAREN" "("; colinc(columnNum, yytext); T.LPAREN(!lineNum, !columnNum - 1) end
 | _ => raise Internal.LexerError
 
 		) end )

@@ -10,7 +10,6 @@
          not_formula | operand
 
 %pos int
-%arg (fileName): string
 %eop EOF
 %noshift EOF
 %right THEN ELSE

@@ -6,8 +6,8 @@ structure booleanParser =
 		 structure Lex = booleanLex)
 		 
 fun invoke lexstream =
-	let fun print_error(x, y, str) =
-			TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toString(y) ^ ":" ^ str ^ "\n")
+	let fun print_error(str, pos, _) =
+			TextIO.output(TextIO.stdOut, "Unknown Token:" ^ ":" ^ ":" ^ str ^ "\n")
 	in
 		booleanParser.parse(0, lexstream, print_error, ())
 	end
@@ -24,21 +24,21 @@ fun fileToString fileName =
 	in
 		TextIO.input instream
 	end
-	handle IO => print("File cannot be opened. Terminating!\n")
 
 fun lexerToParser lexer = 
 	let val dummyEOF = booleanLrVals.Tokens.EOF(0, 0);
 		val (result, lexer) = invoke lexer;
 		val (nextToken, lexer) = booleanParser.Stream.get lexer
 	in
-		if(booleanParser.sameToken(nextToken, dummyEOF) then result
+		if(booleanParser.sameToken(nextToken, dummyEOF)) then result
 		else (TextIO.output(TextIO.stdOut, "Warning: Unconsumed Tokens.\n"); result)
 	end	
 	
-val fileName = CommandLine.arguments();
-val str = fileToString (hd(fileName));
-val lexer = stringToLexer str;
-lexerToParser lexer;
+(*val fileName = CommandLine.arguments();
+val str = fileToString (hd(fileName));*)
+val parseString = lexerToParser o stringToLexer 
+(*val lexer = stringToLexer str;
+lexerToParser lexer;*)
 	
 		
 		

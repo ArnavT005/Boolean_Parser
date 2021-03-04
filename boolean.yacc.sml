@@ -162,7 +162,7 @@ end
 end
 local open Header in
 type pos = int
-type arg = string
+type arg = unit
 structure MlyValue = 
 struct
 datatype svalue = VOID | ntVOID of unit ->  unit
@@ -212,7 +212,7 @@ exception mlyAction of int
 local open Header in
 val actions = 
 fn (i392,defaultPos,stack,
-    (fileName):arg) =>
+    (()):arg) =>
 case (i392,stack)
 of  ( 0, ( ( _, ( MlyValue.ntVOID program1, program1left, 
 program1right)) :: rest671)) => let val  result = MlyValue.ntVOID (fn
