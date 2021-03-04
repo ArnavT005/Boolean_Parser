@@ -16,14 +16,14 @@
 %right THEN ELSE
 %right IF
 %right IMPLIES
-%right NOT
 %left EQUALS OR XOR AND
+%right NOT
 %start code_file
 
 %verbose
 
 %%
-code_file: program EOF ()
+code_file: program ()
 program: statement ()
 		|program statement ()
 statement: conditional_formula TERM ()

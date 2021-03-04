@@ -1,0 +1,436 @@
+
+state 0:
+
+	code_file : . program 
+
+	TERM	shift 13
+	CONST	shift 12
+	NOT	shift 11
+	IF	shift 10
+	LPAREN	shift 9
+	ID	shift 8
+
+	code_file	goto 34
+	program	goto 7
+	statement	goto 6
+	conditional_formula	goto 5
+	implicit_formula	goto 4
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	error
+
+
+state 1:
+
+	not_formula : operand .  (reduce by rule 15)
+
+
+
+	.	reduce by rule 15
+
+
+state 2:
+
+	binary_formula : not_formula .  (reduce by rule 13)
+
+
+
+	.	reduce by rule 13
+
+
+state 3:
+
+	implicit_formula : binary_formula . IMPLIES implicit_formula 
+	implicit_formula : binary_formula .  (reduce by rule 8)
+	binary_formula : binary_formula . AND not_formula 
+	binary_formula : binary_formula . OR not_formula 
+	binary_formula : binary_formula . XOR not_formula 
+	binary_formula : binary_formula . EQUALS not_formula 
+
+	AND	shift 18
+	OR	shift 17
+	XOR	shift 16
+	EQUALS	shift 15
+	IMPLIES	shift 14
+
+
+	.	reduce by rule 8
+
+
+state 4:
+
+	conditional_formula : implicit_formula .  (reduce by rule 6)
+
+
+
+	.	reduce by rule 6
+
+
+state 5:
+
+	statement : conditional_formula . TERM 
+
+	TERM	shift 19
+
+
+	.	error
+
+
+state 6:
+
+	program : statement .  (reduce by rule 1)
+
+
+
+	.	reduce by rule 1
+
+
+state 7:
+
+	code_file : program .  (reduce by rule 0)
+	program : program . statement 
+
+	TERM	shift 13
+	CONST	shift 12
+	NOT	shift 11
+	IF	shift 10
+	LPAREN	shift 9
+	ID	shift 8
+
+	statement	goto 20
+	conditional_formula	goto 5
+	implicit_formula	goto 4
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	reduce by rule 0
+
+
+state 8:
+
+	operand : ID .  (reduce by rule 17)
+
+
+
+	.	reduce by rule 17
+
+
+state 9:
+
+	operand : LPAREN . conditional_formula RPAREN 
+
+	CONST	shift 12
+	NOT	shift 11
+	IF	shift 10
+	LPAREN	shift 9
+	ID	shift 8
+
+	conditional_formula	goto 21
+	implicit_formula	goto 4
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	error
+
+
+state 10:
+
+	conditional_formula : IF . conditional_formula THEN conditional_formula ELSE conditional_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	IF	shift 10
+	LPAREN	shift 9
+	ID	shift 8
+
+	conditional_formula	goto 22
+	implicit_formula	goto 4
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	error
+
+
+state 11:
+
+	not_formula : NOT . not_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	LPAREN	shift 9
+	ID	shift 8
+
+	not_formula	goto 23
+	operand	goto 1
+
+	.	error
+
+
+state 12:
+
+	operand : CONST .  (reduce by rule 16)
+
+
+
+	.	reduce by rule 16
+
+
+state 13:
+
+	statement : TERM .  (reduce by rule 4)
+
+
+
+	.	reduce by rule 4
+
+
+state 14:
+
+	implicit_formula : binary_formula IMPLIES . implicit_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	LPAREN	shift 9
+	ID	shift 8
+
+	implicit_formula	goto 24
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	error
+
+
+state 15:
+
+	binary_formula : binary_formula EQUALS . not_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	LPAREN	shift 9
+	ID	shift 8
+
+	not_formula	goto 25
+	operand	goto 1
+
+	.	error
+
+
+state 16:
+
+	binary_formula : binary_formula XOR . not_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	LPAREN	shift 9
+	ID	shift 8
+
+	not_formula	goto 26
+	operand	goto 1
+
+	.	error
+
+
+state 17:
+
+	binary_formula : binary_formula OR . not_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	LPAREN	shift 9
+	ID	shift 8
+
+	not_formula	goto 27
+	operand	goto 1
+
+	.	error
+
+
+state 18:
+
+	binary_formula : binary_formula AND . not_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	LPAREN	shift 9
+	ID	shift 8
+
+	not_formula	goto 28
+	operand	goto 1
+
+	.	error
+
+
+state 19:
+
+	statement : conditional_formula TERM .  (reduce by rule 3)
+
+
+
+	.	reduce by rule 3
+
+
+state 20:
+
+	program : program statement .  (reduce by rule 2)
+
+
+
+	.	reduce by rule 2
+
+
+state 21:
+
+	operand : LPAREN conditional_formula . RPAREN 
+
+	RPAREN	shift 29
+
+
+	.	error
+
+
+state 22:
+
+	conditional_formula : IF conditional_formula . THEN conditional_formula ELSE conditional_formula 
+
+	THEN	shift 30
+
+
+	.	error
+
+
+state 23:
+
+	not_formula : NOT not_formula .  (reduce by rule 14)
+
+
+
+	.	reduce by rule 14
+
+
+state 24:
+
+	implicit_formula : binary_formula IMPLIES implicit_formula .  (reduce by rule 7)
+
+
+
+	.	reduce by rule 7
+
+
+state 25:
+
+	binary_formula : binary_formula EQUALS not_formula .  (reduce by rule 12)
+
+
+
+	.	reduce by rule 12
+
+
+state 26:
+
+	binary_formula : binary_formula XOR not_formula .  (reduce by rule 11)
+
+
+
+	.	reduce by rule 11
+
+
+state 27:
+
+	binary_formula : binary_formula OR not_formula .  (reduce by rule 10)
+
+
+
+	.	reduce by rule 10
+
+
+state 28:
+
+	binary_formula : binary_formula AND not_formula .  (reduce by rule 9)
+
+
+
+	.	reduce by rule 9
+
+
+state 29:
+
+	operand : LPAREN conditional_formula RPAREN .  (reduce by rule 18)
+
+
+
+	.	reduce by rule 18
+
+
+state 30:
+
+	conditional_formula : IF conditional_formula THEN . conditional_formula ELSE conditional_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	IF	shift 10
+	LPAREN	shift 9
+	ID	shift 8
+
+	conditional_formula	goto 31
+	implicit_formula	goto 4
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	error
+
+
+state 31:
+
+	conditional_formula : IF conditional_formula THEN conditional_formula . ELSE conditional_formula 
+
+	ELSE	shift 32
+
+
+	.	error
+
+
+state 32:
+
+	conditional_formula : IF conditional_formula THEN conditional_formula ELSE . conditional_formula 
+
+	CONST	shift 12
+	NOT	shift 11
+	IF	shift 10
+	LPAREN	shift 9
+	ID	shift 8
+
+	conditional_formula	goto 33
+	implicit_formula	goto 4
+	binary_formula	goto 3
+	not_formula	goto 2
+	operand	goto 1
+
+	.	error
+
+
+state 33:
+
+	conditional_formula : IF conditional_formula THEN conditional_formula ELSE conditional_formula .  (reduce by rule 5)
+
+
+
+	.	reduce by rule 5
+
+
+state 34:
+
+
+	EOF	accept
+
+
+	.	error
+
+31 of 101 action table entries left after compaction
+48 goto table entries
