@@ -6,7 +6,7 @@
 %term EOF | TERM | CONST | NOT | AND | OR | XOR | EQUALS | IMPLIES | IF | THEN | ELSE |
 	  LPAREN | RPAREN | ID of string
 
-%nonterm program | statement | conditional_formula | implicit_formula | binary_formula |
+%nonterm code_file | program | statement | conditional_formula | implicit_formula | binary_formula |
          not_formula | operand
 
 %pos int
@@ -21,6 +21,7 @@
 %verbose
 
 %%
+code_file: program()
 program: statement ()
 		|program statement ()
 statement: conditional_formula TERM ()
