@@ -25,7 +25,7 @@ fun printString([]) = print ""
 val error = 
 	fn x y str => 
 		TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(!x) ^ ":" ^ Int.toString(!y) ^ ":" ^ str ^ "\n")
-val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(yypos, yypos + String.size yytext))	
+val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(0, 0))	
 val colinc = fn x str => (x := !x + String.size str)			   
 
 %%
