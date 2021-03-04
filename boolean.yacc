@@ -16,12 +16,12 @@
 %right IMPLIES
 %left EQUALS OR XOR AND
 %right NOT
-%start program
+%start code_file
 
 %verbose
 
 %%
-code_file: program()
+code_file: program ()
 program: statement ()
 		|program statement ()
 statement: conditional_formula TERM ()
