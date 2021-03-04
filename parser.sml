@@ -6,8 +6,8 @@ structure booleanParser =
 		 structure Lex = booleanLex)
 		 
 fun invoke lexstream =
-	let fun print_error(str, pos, _) =
-			TextIO.output(TextIO.stdOut, "Unknown Token:" ^ ":" ^ ":" ^ str ^ "\n")
+	let fun print_error(str, pos1, pos2) =
+			TextIO.output(TextIO.stdOut, "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ str ^ "\n")
 	in
 		booleanParser.parse(0, lexstream, print_error, ())
 	end
