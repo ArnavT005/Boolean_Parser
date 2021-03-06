@@ -506,7 +506,7 @@ let fun continue() = lex() in
 | 48 => let val yytext=yymktext() in append token_list "THEN" "THEN"; colinc(columnNum, yytext); T.THEN(!lineNum, !columnNum - 4) end
 | 53 => let val yytext=yymktext() in append token_list "ELSE" "ELSE"; colinc(columnNum, yytext); T.ELSE(!lineNum, !columnNum - 4) end
 | 6 => let val yytext=yymktext() in append token_list "TERM" ";"; colinc(columnNum, yytext); T.TERM(!lineNum, !columnNum - 1) end
-| 63 => let val yytext=yymktext() in append token_list "CONST" yytext; colinc(columnNum, yytext); T.CONST(!lineNum, !columnNum - String.size yytext) end
+| 63 => let val yytext=yymktext() in append token_list "CONST" yytext; colinc(columnNum, yytext); T.CONST(yytext, !lineNum, !columnNum - String.size yytext) end
 | 66 => let val yytext=yymktext() in append token_list "ID" yytext; colinc(columnNum, yytext); T.ID(yytext, !lineNum, !columnNum - String.size yytext) end
 | 68 => let val yytext=yymktext() in error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex() end
 | 8 => let val yytext=yymktext() in append token_list "LPAREN" "("; colinc(columnNum, yytext); T.LPAREN(!lineNum, !columnNum - 1) end

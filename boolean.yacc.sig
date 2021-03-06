@@ -14,7 +14,7 @@ val XOR:  'a * 'a -> (svalue,'a) token
 val OR:  'a * 'a -> (svalue,'a) token
 val AND:  'a * 'a -> (svalue,'a) token
 val NOT:  'a * 'a -> (svalue,'a) token
-val CONST:  'a * 'a -> (svalue,'a) token
+val CONST: (string) *  'a * 'a -> (svalue,'a) token
 val TERM:  'a * 'a -> (svalue,'a) token
 val EOF:  'a * 'a -> (svalue,'a) token
 end
