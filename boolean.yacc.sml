@@ -158,10 +158,10 @@ struct
 datatype svalue = VOID | ntVOID of unit ->  unit
  | ID of unit ->  (string) | CONST of unit ->  (string)
  | formula of unit ->  (string) | statement of unit ->  (string)
- | stmt_list of unit ->  (string) | program of unit ->  (string)
+ | stmt_list of unit ->  (string) | program of unit ->  (unit)
 end
 type svalue = MlyValue.svalue
-type result = string
+type result = unit
 end
 structure EC=
 struct
@@ -209,8 +209,9 @@ case (i392,stack)
 of  ( 0, ( ( _, ( MlyValue.stmt_list stmt_list1, stmt_list1left, 
 stmt_list1right)) :: rest671)) => let val  result = MlyValue.program
  (fn _ => let val  (stmt_list as stmt_list1) = stmt_list1 ()
- in (pre_order := "program -> stmt_list, " ^ stmt_list1; !pre_order)
-
+ in (
+pre_order := "program -> stmt_list, " ^ stmt_list1 ^ "\n"; print(!pre_order)
+)
 end)
  in ( LrTable.NT 0, ( result, stmt_list1left, stmt_list1right), 
 rest671)
@@ -263,7 +264,7 @@ end
 |  ( 6, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
  let val  result = MlyValue.formula (fn _ => let val  (ID as ID1) = 
 ID1 ()
- in (pre_order := "formula -> ID, " ^ "ID \"" ^ ID "\""; !pre_order)
+ in (pre_order := "formula -> ID, " ^ "ID \"" ^ ID ^ "\""; !pre_order)
 
 end)
  in ( LrTable.NT 3, ( result, ID1left, ID1right), rest671)
@@ -355,7 +356,7 @@ MlyValue.formula formula1, _, _)) :: ( _, ( _, IF1left, _)) :: rest671
  val  formula2 = formula2 ()
  val  formula3 = formula3 ()
  in (
-pre_order := "formula -> IF formula THEN formula ELSE formula, " ^ "IF \"IF\", " ^ formula1 ^ ", " ^ "THEN \"THEN\", " ^ formula2 ^ ", " ^ "ELSE \"ELSE\", " formula3; !pre_order
+pre_order := "formula -> IF formula THEN formula ELSE formula, " ^ "IF \"IF\", " ^ formula1 ^ ", " ^ "THEN \"THEN\", " ^ formula2 ^ ", " ^ "ELSE \"ELSE\", " ^ formula3; !pre_order
 )
 end)
  in ( LrTable.NT 3, ( result, IF1left, formula3right), rest671)
