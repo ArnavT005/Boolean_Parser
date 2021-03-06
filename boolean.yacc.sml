@@ -17,72 +17,63 @@ local open LrTable in
 val table=let val actionRows =
 "\
 \\001\000\001\000\000\000\000\000\
-\\001\000\002\000\015\000\003\000\014\000\004\000\013\000\010\000\012\000\
-\\013\000\011\000\015\000\010\000\000\000\
-\\001\000\002\000\021\000\000\000\
-\\001\000\003\000\014\000\004\000\013\000\010\000\012\000\013\000\011\000\
-\\015\000\010\000\000\000\
-\\001\000\003\000\014\000\004\000\013\000\013\000\011\000\015\000\010\000\000\000\
-\\001\000\011\000\032\000\000\000\
-\\001\000\012\000\034\000\000\000\
-\\001\000\014\000\031\000\000\000\
-\\037\000\002\000\015\000\003\000\014\000\004\000\013\000\010\000\012\000\
-\\013\000\011\000\015\000\010\000\000\000\
+\\001\000\002\000\011\000\003\000\010\000\004\000\009\000\010\000\008\000\
+\\013\000\007\000\015\000\006\000\000\000\
+\\001\000\002\000\017\000\005\000\016\000\006\000\015\000\007\000\014\000\
+\\008\000\013\000\009\000\012\000\000\000\
+\\001\000\003\000\010\000\004\000\009\000\010\000\008\000\013\000\007\000\
+\\015\000\006\000\000\000\
+\\001\000\005\000\016\000\006\000\015\000\007\000\014\000\008\000\013\000\
+\\009\000\012\000\011\000\028\000\000\000\
+\\001\000\005\000\016\000\006\000\015\000\007\000\014\000\008\000\013\000\
+\\009\000\012\000\012\000\030\000\000\000\
+\\001\000\005\000\016\000\006\000\015\000\007\000\014\000\008\000\013\000\
+\\009\000\012\000\014\000\027\000\000\000\
+\\033\000\002\000\011\000\003\000\010\000\004\000\009\000\010\000\008\000\
+\\013\000\007\000\015\000\006\000\000\000\
+\\034\000\000\000\
+\\035\000\000\000\
+\\036\000\000\000\
+\\037\000\000\000\
 \\038\000\000\000\
 \\039\000\000\000\
 \\040\000\000\000\
 \\041\000\000\000\
-\\042\000\000\000\
+\\042\000\005\000\016\000\006\000\015\000\007\000\014\000\008\000\013\000\
+\\009\000\012\000\000\000\
 \\043\000\000\000\
 \\044\000\000\000\
-\\045\000\005\000\020\000\006\000\019\000\007\000\018\000\008\000\017\000\
-\\009\000\016\000\000\000\
+\\045\000\000\000\
 \\046\000\000\000\
-\\047\000\000\000\
-\\048\000\000\000\
-\\049\000\000\000\
-\\050\000\000\000\
-\\051\000\000\000\
-\\052\000\000\000\
-\\053\000\000\000\
-\\054\000\000\000\
-\\055\000\000\000\
+\\047\000\005\000\016\000\006\000\015\000\007\000\014\000\008\000\013\000\
+\\009\000\012\000\000\000\
 \"
 val actionRowNumbers =
-"\001\000\023\000\021\000\016\000\
-\\014\000\002\000\009\000\008\000\
-\\025\000\003\000\003\000\004\000\
-\\024\000\012\000\004\000\004\000\
-\\004\000\004\000\004\000\011\000\
-\\010\000\007\000\005\000\022\000\
-\\015\000\020\000\019\000\018\000\
-\\017\000\026\000\003\000\006\000\
-\\003\000\013\000\000\000"
+"\001\000\002\000\008\000\007\000\
+\\013\000\003\000\003\000\003\000\
+\\012\000\011\000\003\000\003\000\
+\\003\000\003\000\003\000\010\000\
+\\009\000\006\000\004\000\015\000\
+\\016\000\020\000\019\000\018\000\
+\\017\000\014\000\003\000\005\000\
+\\003\000\021\000\000\000"
 val gotoT =
 "\
-\\001\000\034\000\002\000\007\000\003\000\006\000\004\000\005\000\
-\\005\000\004\000\006\000\003\000\007\000\002\000\008\000\001\000\000\000\
+\\001\000\030\000\002\000\003\000\003\000\002\000\004\000\001\000\000\000\
 \\000\000\
 \\000\000\
+\\003\000\016\000\004\000\001\000\000\000\
+\\000\000\
+\\004\000\017\000\000\000\
+\\004\000\018\000\000\000\
+\\004\000\019\000\000\000\
 \\000\000\
 \\000\000\
-\\000\000\
-\\000\000\
-\\003\000\020\000\004\000\005\000\005\000\004\000\006\000\003\000\
-\\007\000\002\000\008\000\001\000\000\000\
-\\000\000\
-\\004\000\021\000\005\000\004\000\006\000\003\000\007\000\002\000\
-\\008\000\001\000\000\000\
-\\004\000\022\000\005\000\004\000\006\000\003\000\007\000\002\000\
-\\008\000\001\000\000\000\
-\\007\000\023\000\008\000\001\000\000\000\
-\\000\000\
-\\000\000\
-\\005\000\024\000\006\000\003\000\007\000\002\000\008\000\001\000\000\000\
-\\007\000\025\000\008\000\001\000\000\000\
-\\007\000\026\000\008\000\001\000\000\000\
-\\007\000\027\000\008\000\001\000\000\000\
-\\007\000\028\000\008\000\001\000\000\000\
+\\004\000\020\000\000\000\
+\\004\000\021\000\000\000\
+\\004\000\022\000\000\000\
+\\004\000\023\000\000\000\
+\\004\000\024\000\000\000\
 \\000\000\
 \\000\000\
 \\000\000\
@@ -94,16 +85,14 @@ val gotoT =
 \\000\000\
 \\000\000\
 \\000\000\
-\\004\000\031\000\005\000\004\000\006\000\003\000\007\000\002\000\
-\\008\000\001\000\000\000\
+\\004\000\027\000\000\000\
 \\000\000\
-\\004\000\033\000\005\000\004\000\006\000\003\000\007\000\002\000\
-\\008\000\001\000\000\000\
+\\004\000\029\000\000\000\
 \\000\000\
 \\000\000\
 \"
-val numstates = 35
-val numrules = 19
+val numstates = 31
+val numrules = 15
 val s = ref "" and index = ref 0
 val string_to_int = fn () => 
 let val i = !index
@@ -214,13 +203,13 @@ val actions =
 fn (i392,defaultPos,stack,
     (()):arg) =>
 case (i392,stack)
-of  ( 0, ( ( _, ( MlyValue.ntVOID program1, program1left, 
-program1right)) :: rest671)) => let val  result = MlyValue.ntVOID (fn
- _ => ( let val  program1 = program1 ()
+of  ( 0, ( ( _, ( MlyValue.ntVOID stmt_list1, stmt_list1left, 
+stmt_list1right)) :: rest671)) => let val  result = MlyValue.ntVOID
+ (fn _ => ( let val  stmt_list1 = stmt_list1 ()
  in ()
 end; ()))
- in ( LrTable.NT 0, ( result, program1left, program1right), rest671)
-
+ in ( LrTable.NT 0, ( result, stmt_list1left, stmt_list1right), 
+rest671)
 end
 |  ( 1, ( ( _, ( MlyValue.ntVOID statement1, statement1left, 
 statement1right)) :: rest671)) => let val  result = MlyValue.ntVOID
@@ -231,151 +220,111 @@ end; ()))
 rest671)
 end
 |  ( 2, ( ( _, ( MlyValue.ntVOID statement1, _, statement1right)) :: (
- _, ( MlyValue.ntVOID program1, program1left, _)) :: rest671)) => let
- val  result = MlyValue.ntVOID (fn _ => ( let val  program1 = program1
- ()
+ _, ( MlyValue.ntVOID stmt_list1, stmt_list1left, _)) :: rest671)) =>
+ let val  result = MlyValue.ntVOID (fn _ => ( let val  stmt_list1 = 
+stmt_list1 ()
  val  statement1 = statement1 ()
  in ()
 end; ()))
- in ( LrTable.NT 1, ( result, program1left, statement1right), rest671)
-
+ in ( LrTable.NT 1, ( result, stmt_list1left, statement1right), 
+rest671)
 end
-|  ( 3, ( ( _, ( _, _, TERM1right)) :: ( _, ( MlyValue.ntVOID 
-conditional_formula1, conditional_formula1left, _)) :: rest671)) =>
- let val  result = MlyValue.ntVOID (fn _ => ( let val  
-conditional_formula1 = conditional_formula1 ()
+|  ( 3, ( ( _, ( _, _, TERM1right)) :: ( _, ( MlyValue.ntVOID formula1
+, formula1left, _)) :: rest671)) => let val  result = MlyValue.ntVOID
+ (fn _ => ( let val  formula1 = formula1 ()
  in ()
 end; ()))
- in ( LrTable.NT 2, ( result, conditional_formula1left, TERM1right), 
-rest671)
+ in ( LrTable.NT 2, ( result, formula1left, TERM1right), rest671)
 end
 |  ( 4, ( ( _, ( _, TERM1left, TERM1right)) :: rest671)) => let val  
 result = MlyValue.ntVOID (fn _ => ())
  in ( LrTable.NT 2, ( result, TERM1left, TERM1right), rest671)
 end
-|  ( 5, ( ( _, ( MlyValue.ntVOID conditional_formula3, _, 
-conditional_formula3right)) :: _ :: ( _, ( MlyValue.ntVOID 
-conditional_formula2, _, _)) :: _ :: ( _, ( MlyValue.ntVOID 
-conditional_formula1, _, _)) :: ( _, ( _, IF1left, _)) :: rest671)) =>
- let val  result = MlyValue.ntVOID (fn _ => ( let val  
-conditional_formula1 = conditional_formula1 ()
- val  conditional_formula2 = conditional_formula2 ()
- val  conditional_formula3 = conditional_formula3 ()
- in ()
-end; ()))
- in ( LrTable.NT 3, ( result, IF1left, conditional_formula3right), 
-rest671)
+|  ( 5, ( ( _, ( _, CONST1left, CONST1right)) :: rest671)) => let val 
+ result = MlyValue.ntVOID (fn _ => ())
+ in ( LrTable.NT 3, ( result, CONST1left, CONST1right), rest671)
 end
-|  ( 6, ( ( _, ( MlyValue.ntVOID implicit_formula1, 
-implicit_formula1left, implicit_formula1right)) :: rest671)) => let
- val  result = MlyValue.ntVOID (fn _ => ( let val  implicit_formula1 =
- implicit_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 3, ( result, implicit_formula1left, 
-implicit_formula1right), rest671)
-end
-|  ( 7, ( ( _, ( MlyValue.ntVOID implicit_formula1, _, 
-implicit_formula1right)) :: _ :: ( _, ( MlyValue.ntVOID 
-binary_formula1, binary_formula1left, _)) :: rest671)) => let val  
-result = MlyValue.ntVOID (fn _ => ( let val  binary_formula1 = 
-binary_formula1 ()
- val  implicit_formula1 = implicit_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 4, ( result, binary_formula1left, 
-implicit_formula1right), rest671)
-end
-|  ( 8, ( ( _, ( MlyValue.ntVOID binary_formula1, binary_formula1left,
- binary_formula1right)) :: rest671)) => let val  result = 
-MlyValue.ntVOID (fn _ => ( let val  binary_formula1 = binary_formula1
- ()
- in ()
-end; ()))
- in ( LrTable.NT 4, ( result, binary_formula1left, 
-binary_formula1right), rest671)
-end
-|  ( 9, ( ( _, ( MlyValue.ntVOID not_formula1, _, not_formula1right))
- :: _ :: ( _, ( MlyValue.ntVOID binary_formula1, binary_formula1left,
- _)) :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let
- val  binary_formula1 = binary_formula1 ()
- val  not_formula1 = not_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 5, ( result, binary_formula1left, not_formula1right),
- rest671)
-end
-|  ( 10, ( ( _, ( MlyValue.ntVOID not_formula1, _, not_formula1right))
- :: _ :: ( _, ( MlyValue.ntVOID binary_formula1, binary_formula1left,
- _)) :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let
- val  binary_formula1 = binary_formula1 ()
- val  not_formula1 = not_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 5, ( result, binary_formula1left, not_formula1right),
- rest671)
-end
-|  ( 11, ( ( _, ( MlyValue.ntVOID not_formula1, _, not_formula1right))
- :: _ :: ( _, ( MlyValue.ntVOID binary_formula1, binary_formula1left,
- _)) :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let
- val  binary_formula1 = binary_formula1 ()
- val  not_formula1 = not_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 5, ( result, binary_formula1left, not_formula1right),
- rest671)
-end
-|  ( 12, ( ( _, ( MlyValue.ntVOID not_formula1, _, not_formula1right))
- :: _ :: ( _, ( MlyValue.ntVOID binary_formula1, binary_formula1left,
- _)) :: rest671)) => let val  result = MlyValue.ntVOID (fn _ => ( let
- val  binary_formula1 = binary_formula1 ()
- val  not_formula1 = not_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 5, ( result, binary_formula1left, not_formula1right),
- rest671)
-end
-|  ( 13, ( ( _, ( MlyValue.ntVOID not_formula1, not_formula1left, 
-not_formula1right)) :: rest671)) => let val  result = MlyValue.ntVOID
- (fn _ => ( let val  not_formula1 = not_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 5, ( result, not_formula1left, not_formula1right), 
-rest671)
-end
-|  ( 14, ( ( _, ( MlyValue.ntVOID not_formula1, _, not_formula1right))
- :: ( _, ( _, NOT1left, _)) :: rest671)) => let val  result = 
-MlyValue.ntVOID (fn _ => ( let val  not_formula1 = not_formula1 ()
- in ()
-end; ()))
- in ( LrTable.NT 6, ( result, NOT1left, not_formula1right), rest671)
-
-end
-|  ( 15, ( ( _, ( MlyValue.ntVOID operand1, operand1left, 
-operand1right)) :: rest671)) => let val  result = MlyValue.ntVOID (fn
- _ => ( let val  operand1 = operand1 ()
- in ()
-end; ()))
- in ( LrTable.NT 6, ( result, operand1left, operand1right), rest671)
-
-end
-|  ( 16, ( ( _, ( _, CONST1left, CONST1right)) :: rest671)) => let
- val  result = MlyValue.ntVOID (fn _ => ())
- in ( LrTable.NT 7, ( result, CONST1left, CONST1right), rest671)
-end
-|  ( 17, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
+|  ( 6, ( ( _, ( MlyValue.ID ID1, ID1left, ID1right)) :: rest671)) =>
  let val  result = MlyValue.ntVOID (fn _ => ( let val  ID1 = ID1 ()
  in ()
 end; ()))
- in ( LrTable.NT 7, ( result, ID1left, ID1right), rest671)
+ in ( LrTable.NT 3, ( result, ID1left, ID1right), rest671)
 end
-|  ( 18, ( ( _, ( _, _, RPAREN1right)) :: ( _, ( MlyValue.ntVOID 
-conditional_formula1, _, _)) :: ( _, ( _, LPAREN1left, _)) :: rest671)
-) => let val  result = MlyValue.ntVOID (fn _ => ( let val  
-conditional_formula1 = conditional_formula1 ()
+|  ( 7, ( ( _, ( _, _, RPAREN1right)) :: ( _, ( MlyValue.ntVOID 
+formula1, _, _)) :: ( _, ( _, LPAREN1left, _)) :: rest671)) => let
+ val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = formula1
+ ()
  in ()
 end; ()))
- in ( LrTable.NT 7, ( result, LPAREN1left, RPAREN1right), rest671)
+ in ( LrTable.NT 3, ( result, LPAREN1left, RPAREN1right), rest671)
+end
+|  ( 8, ( ( _, ( MlyValue.ntVOID formula1, _, formula1right)) :: ( _, 
+( _, NOT1left, _)) :: rest671)) => let val  result = MlyValue.ntVOID
+ (fn _ => ( let val  formula1 = formula1 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, NOT1left, formula1right), rest671)
+end
+|  ( 9, ( ( _, ( MlyValue.ntVOID formula2, _, formula2right)) :: _ :: 
+( _, ( MlyValue.ntVOID formula1, formula1left, _)) :: rest671)) => let
+ val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = formula1
+ ()
+ val  formula2 = formula2 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, formula1left, formula2right), rest671)
+
+end
+|  ( 10, ( ( _, ( MlyValue.ntVOID formula2, _, formula2right)) :: _ ::
+ ( _, ( MlyValue.ntVOID formula1, formula1left, _)) :: rest671)) =>
+ let val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = 
+formula1 ()
+ val  formula2 = formula2 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, formula1left, formula2right), rest671)
+
+end
+|  ( 11, ( ( _, ( MlyValue.ntVOID formula2, _, formula2right)) :: _ ::
+ ( _, ( MlyValue.ntVOID formula1, formula1left, _)) :: rest671)) =>
+ let val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = 
+formula1 ()
+ val  formula2 = formula2 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, formula1left, formula2right), rest671)
+
+end
+|  ( 12, ( ( _, ( MlyValue.ntVOID formula2, _, formula2right)) :: _ ::
+ ( _, ( MlyValue.ntVOID formula1, formula1left, _)) :: rest671)) =>
+ let val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = 
+formula1 ()
+ val  formula2 = formula2 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, formula1left, formula2right), rest671)
+
+end
+|  ( 13, ( ( _, ( MlyValue.ntVOID formula2, _, formula2right)) :: _ ::
+ ( _, ( MlyValue.ntVOID formula1, formula1left, _)) :: rest671)) =>
+ let val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = 
+formula1 ()
+ val  formula2 = formula2 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, formula1left, formula2right), rest671)
+
+end
+|  ( 14, ( ( _, ( MlyValue.ntVOID formula3, _, formula3right)) :: _ ::
+ ( _, ( MlyValue.ntVOID formula2, _, _)) :: _ :: ( _, ( 
+MlyValue.ntVOID formula1, _, _)) :: ( _, ( _, IF1left, _)) :: rest671)
+) => let val  result = MlyValue.ntVOID (fn _ => ( let val  formula1 = 
+formula1 ()
+ val  formula2 = formula2 ()
+ val  formula3 = formula3 ()
+ in ()
+end; ()))
+ in ( LrTable.NT 3, ( result, IF1left, formula3right), rest671)
 end
 | _ => raise (mlyAction i392)
 end
