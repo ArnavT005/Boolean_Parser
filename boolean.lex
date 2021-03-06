@@ -32,7 +32,7 @@ fun error(x, y, str) = (TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toSt
 
 fun colinc(x, str) = (x := !x + String.size str)			   
 
-val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(0, 0))	
+val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(!lineNum, !columnNum, 0, 0))	
 
 
 %%
