@@ -57,5 +57,5 @@ ws = [\ \t];
 "THEN"           => (append token_list "THEN" "THEN"; colinc(columnNum, yytext); T.THEN(!lineNum, !columnNum - 4, yypos, yypos + String.size yytext));
 "ELSE"			 => (append token_list "ELSE" "ELSE"; colinc(columnNum, yytext); T.ELSE(!lineNum, !columnNum - 4, yypos, yypos + String.size yytext));
 "TRUE" | "FALSE" => (append token_list "CONST" yytext; colinc(columnNum, yytext); T.CONST(yytext, !lineNum, !columnNum - String.size yytext, yypos, yypos + String.size yytext));
-{alpha}+         => (append token_list "ID" yytext; colinc(columnNum, yytext); T.ID(yytext, !lineNum, !columnNum - String.size yytext, yypos, yypos + String.size));
+{alpha}+         => (append token_list "ID" yytext; colinc(columnNum, yytext); T.ID(yytext, !lineNum, !columnNum - String.size yytext, yypos, yypos + String.size yytext));
 .                => (error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex());
