@@ -13,7 +13,7 @@ fun ToString(str, a: int, b: int) = str;
 
 %name boolean
 
-%term EOF | TERM | CONST of string | NOT | AND | OR  | XOR  |
+%term EOF | TERM | CONST of string | NOT | AND | OR  | XOR  | error |
 	  EQUALS | IMPLIES | IF | THEN | ELSE | LPAREN | RPAREN | ID of string
 
 %nonterm program of unit | stmt_list of string | statement of string | formula of string
@@ -28,6 +28,9 @@ fun ToString(str, a: int, b: int) = str;
 %right IMPLIES
 %left EQUALS OR XOR AND
 %right NOT
+
+%subst error for EOF | error for TERM | error for CONST | error for NOT | error for AND | error for OR | error for XOR | error for EQUALS | error for IMPLIES | 
+       error for IF | error FOR THEN | error for ELSE | error for LPAREN | error for RPAREN | error for ID
 
 %start program
 
