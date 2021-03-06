@@ -10,6 +10,12 @@ structure Header =
 struct
 val post_order = ref ""
 
+fun IntStarInt(a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
+
+fun StringStarIntStarInt(str, a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
+
+fun ToString(str, a: int, b: int) = str;
+
 
 end
 structure LrTable = Token.LrTable

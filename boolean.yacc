@@ -4,12 +4,14 @@ fun IntStarInt(a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
 
 fun StringStarIntStarInt(str, a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
 
+fun ToString(str, a: int, b: int) = str;
+
 %%
 
 %name boolean
 
-%term EOF of int * int | TERM of int * int | CONST of string * int * int | NOT of int * int | AND of int * int | OR of int * int | XOR of int * int |
-	  EQUALS of int * int | IMPLIES of int * int | IF of int * int | THEN of int * int | ELSE of int * int | LPAREN of int * int | RPAREN of int * int | ID of string * int * int
+%term EOF | TERM | CONST of string | NOT | AND | OR  | XOR  |
+	  EQUALS | IMPLIES | IF | THEN | ELSE | LPAREN | RPAREN | ID of string
 
 %nonterm program of unit | stmt_list of string | statement of string | formula of string
 

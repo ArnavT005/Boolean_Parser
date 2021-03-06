@@ -11,25 +11,33 @@ type lexresult = (svalue, pos) token
 
 val lineNum = ref 1
 val columnNum = ref 1
+
 val token_list = ref ([]: string list)
+
 fun reverse(ls) = 
 	let fun rev_iter([], ls) = ls
 		|	rev_iter(x :: xs, ls) = rev_iter(xs, x :: ls)
 	in
 		rev_iter(ls, [])
 	end
+	
 fun append list str1 str2 = 
 		list := "\"" ^ str2 ^ "\"" :: str1 :: !list
+		
 fun secondaryPrint([]) = print ""
 |	secondaryPrint(ls) =
 		(print (", " ^ hd(ls) ^ " " ^ hd(tl(ls))); secondaryPrint(tl(tl(ls))));
+		
 fun printString([]) = print ""
 |	printString(ls) = 
 		(print (hd(ls) ^ " " ^ hd(tl(ls))); secondaryPrint(tl(tl(ls))));
-fun error(x, y, str) = 
-		TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toString(y) ^ ":" ^ str ^ "\n")
-val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(0, 0))	
+		
+fun error(x, y, str) = (TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toString(y) ^ ":" ^ str ^ "\n"); OS.Process.exit(OS.Process.success));
+
 fun colinc(x, str) = (x := !x + String.size str)			   
+
+val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; Tokens.EOF(!lineNum, !columnNum))	
+
 
 end (* end of user routines *)
 exception LexError (* raised if illegal leaf action tried *)
