@@ -6,8 +6,7 @@
 %term EOF | TERM | CONST | NOT | AND | OR | XOR | EQUALS | IMPLIES | IF | THEN | ELSE |
 	  LPAREN | RPAREN | ID of string
 
-%nonterm program | stmt_list | statement | conditional_formula | implicit_formula | binary_formula |
-         not_formula | operand
+%nonterm program | stmt_list | statement | formula
 
 %pos int
 
