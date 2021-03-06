@@ -38,7 +38,7 @@ formula: CONST (post_order := "CONST \"" ^ CONST ^ "\", " ^ "formula -> CONST"; 
 	   | formula OR formula (post_order := formula1 ^ ", " ^ "OR \"OR\", " ^ formula2 ^ ", " ^ "formula -> formula OR formula"; !post_order)
 	   | formula XOR formula (post_order := formula1 ^ ", " ^ "XOR \"XOR\", " ^ formula2 ^ ", " ^ "formula -> formula XOR formula"; !post_order)
 	   | formula EQUALS formula (post_order := formula1 ^ ", " ^ "EQUALS \"EQUALS\", " ^ formula2 ^ ", " ^ "formula -> formula EQUALS formula"; !post_order)
-	   | IF formula THEN formula ELSE formula (post_order := "IF \"IF\", " ^ formula1 ^ ", " ^ "THEN \"THEN\", " ^ formula2 ^ ", " ^ "ELSE \"ELSE\", " ^ formula3 ", " ^ "formula -> IF formula THEN formula ELSE formula" ^ ; !post_order)
+	   | IF formula THEN formula ELSE formula (post_order := "IF \"IF\", " ^ formula1 ^ ", " ^ "THEN \"THEN\", " ^ formula2 ^ ", " ^ "ELSE \"ELSE\", " ^ formula3 ^ ", " ^ "formula -> IF formula THEN formula ELSE formula"; !post_order)
 
 
 
