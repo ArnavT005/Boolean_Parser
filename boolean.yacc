@@ -34,14 +34,14 @@ fun ToString(str, a: int, b: int) = str;
 %verbose
 
 %%
-program: stmt_list (post_order := stmt_list1 ^ ", " ^ "program -> stmt_list\n"; print(!post_order))
-stmt_list: statement (post_order := statement1 ^ ", " ^ "stmt_list -> statement"; !post_order)
-		 | stmt_list statement (post_order := stmt_list1 ^ ", " ^ statement1 ^ ", " ^ "stmt_list -> stmt_list statement"; !post_order)
+program: stmt_list (post_order := stmt_list ^ ", " ^ "program -> stmt_list\n"; print(!post_order))
+stmt_list: statement (post_order := statement ^ ", " ^ "stmt_list -> statement"; !post_order)
+		 | stmt_list statement (post_order := stmt_list ^ ", " ^ statement ^ ", " ^ "stmt_list -> stmt_list statement"; !post_order)
 statement: formula TERM (post_order := formula ^ ", " ^ "TERM \";\", " ^ "statement -> formula TERM"; !post_order)
 formula: CONST (post_order := "CONST \"" ^ CONST ^ "\", " ^ "formula -> CONST"; !post_order)
 	   | ID (post_order := "ID \"" ^ ID ^ "\", " ^ "formula -> ID"; !post_order)
-	   | LPAREN formula RPAREN (post_order := "LPAREN \"(\", " ^ formula1 ^ ", " ^ "RPAREN \")\", " ^ "formula -> LPAREN formula RPAREN"; !post_order)
-	   | NOT formula (post_order := "NOT \"NOT\", " ^ formula1 ^ ", " ^ "formula -> NOT formula"; !post_order)
+	   | LPAREN formula RPAREN (post_order := "LPAREN \"(\", " ^ formula ^ ", " ^ "RPAREN \")\", " ^ "formula -> LPAREN formula RPAREN"; !post_order)
+	   | NOT formula (post_order := "NOT \"NOT\", " ^ formula ^ ", " ^ "formula -> NOT formula"; !post_order)
 	   | formula IMPLIES formula (post_order := formula1 ^ ", " ^ "IMPLIES \"IMPLIES\", " ^ formula2 ^ ", " ^ "formula -> formula IMPLIES formula"; !post_order)
 	   | formula AND formula (post_order := formula1 ^ ", " ^ "AND \"AND\", " ^ formula2 ^ ", " ^ "formula -> formula AND formula" ; !post_order)
 	   | formula OR formula (post_order := formula1 ^ ", " ^ "OR \"OR\", " ^ formula2 ^ ", " ^ "formula -> formula OR formula"; !post_order)
