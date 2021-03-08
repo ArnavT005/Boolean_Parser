@@ -33,7 +33,7 @@ val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; T
 
 %%
 
-%structure BoolLex;
+%structure BoolLex
 alpha = [A-Za-z];
 ws = [\ \t];
 

@@ -34,7 +34,18 @@ fun lexerToParser lexer =
 		else (TextIO.output(TextIO.stdOut, "Warning: Unconsumed Tokens.\n"); result)
 	end	
 	
-(*val fileName = CommandLine.arguments();
+fun recurseLex str = 
+	let val lexer = BoolLex.makeLexer(fn _ => str))
+		val nextToken = ref lexer();
+		val dummyEOF = EOF(0, 0)
+	in
+		while(!nextToken <> dummyEOF) do
+		( 
+			nextToken := lexer();
+		)
+	end	
+(*
+val fileName = CommandLine.arguments();
 val str = fileToString (hd(fileName));*)
 val parseString = lexerToParser o stringToLexer 
 (*val lexer = stringToLexer str;
