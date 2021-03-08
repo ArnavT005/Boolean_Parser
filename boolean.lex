@@ -44,7 +44,7 @@ fun syntaxErrorIfAny() =
 		else 
 			let val str = optionToString(TextIO.inputLine infile)
 			in (
-				print str ^ "\n";
+				print (str ^ "\n");
 				OS.Process.exit(OS.Process.success)
 			)
 			end
