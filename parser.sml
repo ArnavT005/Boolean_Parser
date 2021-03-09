@@ -12,8 +12,8 @@ val ifError = ref false
 fun maybe(str) =
 	let val infile = TextIO.openIn "Yes"
 	in
-		if(TextIO.endOfStream infile) then ()
-		else (print(str); OS.Process.exit(OS.Process.success))
+		if(TextIO.endOfStream infile) then (TextIO.closeIn infile)
+		else (print(str); TextIO.closeIn infile; OS.Process.exit(OS.Process.success))
 	end	
 
 fun optionToString(SOME(str)) = str
@@ -24,7 +24,7 @@ fun second(_, n2, _) = n2
 fun third(_, _, n3) = n3
 
 fun readToken(infile, num, str) = 
-	if(num = 0) then str
+	if(num = 0) then (TextIO.closeIn infile; str)
 	else 
 		let val s = optionToString(TextIO.inputLine infile)
 		in
@@ -37,7 +37,7 @@ fun invoke lexstream =
 			let val infile = TextIO.openIn "lastToken";
 				val outfile = TextIO.openOut "Error"
 			in (
-				if(TextIO.endOfStream infile) then (error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"; ifError := true)
+				if(TextIO.endOfStream infile) then (error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"; ifError := true; TextIO.closeIn infile)
 				else
 					let val num = third(pos);
 						val str = readToken(infile, num - 1, "")
@@ -58,7 +58,7 @@ fun invoke lexstream =
 							else error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n";
 							ifError := true
 						)	
-						else error := !error;
+						else error := !error
 					)
 					end;
 				maybe(!error);

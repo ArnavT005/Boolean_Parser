@@ -17,7 +17,7 @@ all: $(NAME)
 $(NAME): $(NAME).mlb
 	$(ML) $(NAME).mlb
 
-$(NAME).mlb: $(BOOL).yacc.sig $(BOOL).yacc.sml $(BOOL).lex.sml $(PARSE)
+$(NAME).mlb: $(BOOL).yacc.sig $(BOOL).yacc.sml $(BOOL).lex.sml
 
 $(BOOL).yacc.sig: $(BOOL).yacc
 	$(YCC) $(BOOL).yacc

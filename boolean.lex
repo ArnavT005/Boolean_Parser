@@ -25,7 +25,7 @@ fun appendFile(str) =
 	let val outfile = TextIO.openAppend "lastToken"
 	in(
 		TextIO.output (outfile, str);
-		TextIO.closeOut
+		TextIO.closeOut outfile;
 	)
 	end
 	
@@ -54,11 +54,12 @@ fun syntaxErrorIfAny() =
 	let val infile = TextIO.openIn "Error";
 	    val outfile = TextIO.openOut "Yes"
 	in (
-		if(TextIO.endOfStream infile) then print ""
+		if(TextIO.endOfStream infile) then (TextIO.closeIn infile; print "")
 		else 
 			let val str = optionToString(TextIO.inputLine infile)
 			in (
 				print (str);
+				TextIO.closeIn infile;
 				OS.Process.exit(OS.Process.success)
 			)
 			end;
