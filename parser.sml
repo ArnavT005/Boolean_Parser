@@ -34,7 +34,7 @@ fun readToken(infile, num, str) =
 		 
 fun invoke lexstream =
 	let fun print_error(str, pos, _) =
-			let val infile = TextIO.openIn "Files/ErrorlastToken";
+			let val infile = TextIO.openIn "Files/lastToken";
 				val outfile = TextIO.openOut "Files/Error"
 			in (
 				if(TextIO.endOfStream infile) then (error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"; ifError := true; TextIO.closeIn infile)
