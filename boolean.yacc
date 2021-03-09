@@ -1,13 +1,7 @@
 val post_order = ref ""
-val syntaxError = ref ""
 
 val ifError = ref false
 
-fun IntStarInt(a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
-
-fun StringStarIntStarInt(str, a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
-
-fun ToString(str, a: int, b: int) = str;
 
 %%
 

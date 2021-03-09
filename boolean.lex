@@ -9,6 +9,8 @@ val lineNum = ref 1
 val columnNum = ref 1
 val tokenNum = ref 1
 
+val ifError = ref false
+
 
 val token_list = ref ([]: string list)
 
@@ -25,7 +27,14 @@ fun appendFile(str) =
 		TextIO.output (outfile, str);
 		TextIO.closeOut
 	)
-	end	
+	end
+	
+fun colinc(x, str) = (x := !x + String.size str)
+
+
+fun optionToString(SOME(str)) = str
+|	optionToString(NONE) = ""
+	
 fun append list str1 str2 = 
 		list := "\"" ^ str2 ^ "\"" :: str1 :: !list
 		
@@ -37,12 +46,9 @@ fun printString([]) = print ""
 |	printString(ls) = 
 		(print (hd(ls) ^ " " ^ hd(tl(ls))); secondaryPrint(tl(tl(ls))));
 		
-fun error(x, y, str) = (TextIO.output(TextIO.stdOut, "Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toString(y) ^ ":" ^ str ^ "\n"); OS.Process.exit(OS.Process.success));
+fun error(x, y, str) = (print("Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toString(y) ^ ":" ^ str ^ "\n"); ifError := true);
 
-fun colinc(x, str) = (x := !x + String.size str)
 
-fun optionToString(SOME(str)) = str
-|	optionToString(NONE) = ""
 
 fun syntaxErrorIfAny() =
 	let val infile = TextIO.openIn "Error";
@@ -62,7 +68,11 @@ fun syntaxErrorIfAny() =
 	end		
 			
 
-val eof = fn () => (print "["; printString(reverse(!token_list)); print "]\n"; syntaxErrorIfAny(); Tokens.EOF((!lineNum, !columnNum, !tokenNum), (!lineNum, !columnNum, !tokenNum)))	
+val eof = fn () => (
+	if(!ifError = false) then
+		(print "["; printString(reverse(!token_list)); print "]\n"; syntaxErrorIfAny(); Tokens.EOF((!lineNum, !columnNum, !tokenNum), (!lineNum, !columnNum, !tokenNum)))
+	else
+		OS.Process.exit(OS.Process.success))
 
 
 %%
@@ -86,6 +96,6 @@ ws = [\ \t];
 "IF"			 => (append token_list "IF" "IF"; colinc(columnNum, yytext); appendFile("IF\n"); tokenNum := !tokenNum + 1; T.IF((!lineNum, !columnNum - 2, !tokenNum - 1), (!lineNum, !columnNum - 2, !tokenNum - 1)));
 "THEN"           => (append token_list "THEN" "THEN"; colinc(columnNum, yytext); appendFile("THEN\n"); tokenNum := !tokenNum + 1; T.THEN((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
 "ELSE"			 => (append token_list "ELSE" "ELSE"; colinc(columnNum, yytext); appendFile("ELSE\n"); tokenNum := !tokenNum + 1; T.ELSE((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
-"TRUE" | "FALSE" => (append token_list "CONST" yytext; colinc(columnNum, yytext); appendFile("CONST\n"); tokenNum := !tokenNum + 1; T.CONST(yytext, (!lineNum, !columnNum - String.size yytext, !tokenNum - 1), (!lineNum, !columnNum - String.size yytext, !tokenNum - 1)));
-{alpha}+         => (append token_list "ID" yytext; colinc(columnNum, yytext); appendFile("ID\n"); tokenNum := !tokenNum + 1; T.ID(yytext, (!lineNum, !columnNum - String.size yytext, !tokenNum - 1), (!lineNum, !columnNum - String.size yytext, !tokenNum - 1)));
+"TRUE" | "FALSE" => (append token_list "CONST" yytext; colinc(columnNum, yytext); appendFile("CONST\n"); tokenNum := !tokenNum + 1; T.CONST(yytext, (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
+{alpha}+         => (append token_list "ID" yytext; colinc(columnNum, yytext); appendFile("ID\n"); tokenNum := !tokenNum + 1; T.ID(yytext, (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
 .                => (error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex());
