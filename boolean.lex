@@ -25,7 +25,7 @@ fun appendFile(str) =
 	let val outfile = TextIO.openAppend "lastToken"
 	in(
 		TextIO.output (outfile, str);
-		TextIO.closeOut outfile;
+		TextIO.closeOut outfile
 	)
 	end
 	
