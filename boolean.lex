@@ -10,8 +10,6 @@ val columnNum = ref 1
 val tokenNum = ref 1
 
 val outfile = TextIO.openOut "lastToken"
-val outfile1 = TextIO.openOut "Error"
-TextIO.closeOut outfile1
 
 val token_list = ref ([]: string list)
 

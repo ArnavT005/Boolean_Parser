@@ -28,12 +28,12 @@ fun invoke lexstream =
 	let fun print_error(str, pos, _) =
 			let val infile = TextIO.openIn "lastToken";
 				val outfile = TextIO.openOut "Error"
-			in (
+			in 
 				if(TextIO.endOfStream infile) then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
 				else
 					let val num = third(pos);
 						val str = readToken(infile, num, "")
-					in	
+					in (	
 					if(not (!ifError)) then (
 						if(str = "TERM\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
 						else if(str = "CONST\n" orelse str = "ID" orelse str = "RPAREN") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula BINOP formula\"\n"
@@ -50,9 +50,11 @@ fun invoke lexstream =
 						ifError := true
 					)	
 					else error := !error;
-				TextIO.output (outfile, !error);
-				TexIO.closeOut outfile
-			)
+					TextIO.output (outfile, !error);
+					TexIO.closeOut outfile
+					)
+					end
+			
 			end				
 	in
 		booleanParser.parse(0, lexstream, print_error, ())
@@ -72,7 +74,7 @@ fun fileToString fileName =
 	end
 
 fun lexerToParser lexer = 
-	let val dummyEOF = booleanLrVals.Tokens.EOF(0, 0);
+	let val dummyEOF = booleanLrVals.Tokens.EOF((0, 0, 0), (0, 0, 0));
 		val (result, lexer) = invoke lexer;
 		val (nextToken, lexer) = booleanParser.Stream.get lexer
 	in
