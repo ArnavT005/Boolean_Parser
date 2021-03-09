@@ -22,7 +22,7 @@ fun reverse(ls) =
 	end
 	
 fun appendFile(str) = 
-	let val outfile = TextIO.openAppend "lastToken"
+	let val outfile = TextIO.openAppend "Files/lastToken"
 	in(
 		TextIO.output (outfile, str);
 		TextIO.closeOut outfile
@@ -51,8 +51,8 @@ fun error(x, y, str) = (print("Unknown Token:" ^ Int.toString(x) ^ ":" ^ Int.toS
 
 
 fun syntaxErrorIfAny() =
-	let val infile = TextIO.openIn "Error";
-	    val outfile = TextIO.openOut "Yes"
+	let val infile = TextIO.openIn "Files/Error";
+	    val outfile = TextIO.openOut "Files/Yes"
 	in (
 		if(TextIO.endOfStream infile) then (TextIO.closeIn infile; print "")
 		else 

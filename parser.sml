@@ -10,7 +10,7 @@ val error = ref ""
 val ifError = ref false
 
 fun maybe(str) =
-	let val infile = TextIO.openIn "Yes"
+	let val infile = TextIO.openIn "Files/Yes"
 	in
 		if(TextIO.endOfStream infile) then (TextIO.closeIn infile)
 		else (print(str); TextIO.closeIn infile; OS.Process.exit(OS.Process.success))
@@ -34,8 +34,8 @@ fun readToken(infile, num, str) =
 		 
 fun invoke lexstream =
 	let fun print_error(str, pos, _) =
-			let val infile = TextIO.openIn "lastToken";
-				val outfile = TextIO.openOut "Error"
+			let val infile = TextIO.openIn "Files/ErrorlastToken";
+				val outfile = TextIO.openOut "Files/Error"
 			in (
 				if(TextIO.endOfStream infile) then (error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"; ifError := true; TextIO.closeIn infile)
 				else
