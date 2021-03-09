@@ -8,19 +8,16 @@ NAME = a2
 
 BOOL = boolean
 
-COMP = compile
-
 PARSE = parse.sml
 
 .PHONY: all
 all: $(NAME)
 
 
-$(NAME): $(COMP).mlb
-	$(ML) $(COMP).mlb
-	mv $(COMP) $(NAME)
+$(NAME): $(NAME).mlb
+	$(ML) $(NAME).mlb
 
-$(COMP).mlb: $(BOOL).yacc.sig $(BOOL).yacc.sml $(BOOL).lex.sml $(PARSE)
+$(NAME).mlb: $(BOOL).yacc.sig $(BOOL).yacc.sml $(BOOL).lex.sml $(PARSE)
 
 $(BOOL).yacc.sig: $(BOOL).yacc
 	$(YCC) $(BOOL).yacc
