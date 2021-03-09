@@ -18,7 +18,7 @@ fun ToString(str, a: int, b: int) = str;
 
 %nonterm program of unit | stmt_list of string | statement of string | formula of string
 
-%pos int
+%pos int * int * int
 
 %eop EOF
 %noshift EOF

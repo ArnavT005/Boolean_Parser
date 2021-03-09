@@ -11,34 +11,53 @@ val ifError = ref false
 fun optionToString(SOME(str)) = str
 |	optionToString(NONE) = ""
 		 
+fun first(n1, _, _) = n1
+fun second(_, n2, _) = n2
+fun third(_, _, n3) = n3
+
+fun readToken(infile, num, str) = 
+	if(num = 0) then str
+	else 
+		let val s = optionToString(TextIO.inputLine infile)
+		in
+			readToken(infile, num - 1, s)
+		end
+		
 		 
 fun invoke lexstream =
-	let fun print_error(str, pos1, pos2) =
+	let fun print_error(str, pos, _) =
 			let val infile = TextIO.openIn "lastToken";
-				val str = optionToString(TextIO.inputLine infile);
 				val outfile = TextIO.openOut "Error"
 			in (
-				if(not (!ifError)) then
-					if(str = "TERM") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"program -> stmt_list\"\n"
-					else if(str = "CONST" orelse str = "ID" orelse str = "RPAREN") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> formula BINOP formula\"\n"
-					else if(str = "NOT") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> NOT formula\"\n"
-					else if(str = "AND") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> formula AND formula\"\n"
-					else if(str = "OR") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> formula OR formula\"\n"
-					else if(str = "XOR") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> formula XOR formula\"\n"
-					else if(str = "EQUALS") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> formula EQUALS formula\"\n"
-					else if(str = "IMPLIES") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> formula IMPLIES formula\"\n"
-					else if(str = "IF") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
-					else if(str = "THEN") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
-					else if(str = "ELSE") then error := "Syntax Error:" ^ Int.toString(pos1) ^ ":" ^ Int.toString(pos2) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
-					else error := "Syntax Error: " ^ Int.toString(pos1) ^ ":" ^  Int.toString(pos2) ^ ":" ^ "\"formula -> LPAREN formula RPAREN\"\n"
-				else error := !error;
-				TextIO.output (outfile, !error)
+				if(TextIO.endOfStream infile) then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
+				else
+					let val num = third(pos);
+						val str = readToken(infile, num, "")
+					in	
+					if(not (!ifError)) then (
+						if(str = "TERM\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
+						else if(str = "CONST\n" orelse str = "ID" orelse str = "RPAREN") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula BINOP formula\"\n"
+						else if(str = "NOT\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> NOT formula\"\n"
+						else if(str = "AND\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula AND formula\"\n"
+						else if(str = "OR\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula OR formula\"\n"
+						else if(str = "XOR\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula XOR formula\"\n"
+						else if(str = "EQUALS\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula EQUALS formula\"\n"
+						else if(str = "IMPLIES\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula IMPLIES formula\"\n"
+						else if(str = "IF\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
+						else if(str = "THEN\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
+						else if(str = "ELSE\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
+						else error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LPAREN formula RPAREN\"\n";
+						ifError := true
+					)	
+					else error := !error;
+				TextIO.output (outfile, !error);
+				TexIO.closeOut outfile
 			)
 			end				
 	in
 		booleanParser.parse(0, lexstream, print_error, ())
 	end
-
+	
 fun stringToLexer str =
 	let val done = ref false;
 		val lexer = booleanParser.makeLexer(fn _ => if(!done) then "" else (done := true; str))
@@ -61,16 +80,6 @@ fun lexerToParser lexer =
 		else (TextIO.output(TextIO.stdOut, "Warning: Unconsumed Tokens.\n"); result)
 	end	
 	
-fun recurseLex str = 
-	let val lexer = BoolLex.makeLexer(fn _ => str))
-		val nextToken = ref lexer();
-		val dummyEOF = EOF(0, 0)
-	in
-		while(!nextToken <> dummyEOF) do
-		( 
-			nextToken := lexer();
-		)
-	end	
 (*
 val fileName = CommandLine.arguments();
 val str = fileToString (hd(fileName));*)
