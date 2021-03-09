@@ -8,6 +8,13 @@ structure booleanParser =
 val error = ref ""
 val ifError = ref false
 
+fun maybe(str) =
+	let val infile = TextIO.openIn "Yes"
+	in
+		if(TextIO.endOfStream infile) then ()
+		else (print(str); OS.Process.exit(OS.Process.success))
+	end	
+
 fun optionToString(SOME(str)) = str
 |	optionToString(NONE) = ""
 		 
@@ -32,11 +39,11 @@ fun invoke lexstream =
 				if(TextIO.endOfStream infile) then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
 				else
 					let val num = third(pos);
-						val str = readToken(infile, num, "")
+						val str = readToken(infile, num - 1, "")
 					in (	
 					if(not (!ifError)) then (
 						if(str = "TERM\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
-						else if(str = "CONST\n" orelse str = "ID" orelse str = "RPAREN") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula BINOP formula\"\n"
+						else if(str = "CONST\n" orelse str = "ID\n" orelse str = "RPAREN\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula BINOP formula\"\n"
 						else if(str = "NOT\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> NOT formula\"\n"
 						else if(str = "AND\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula AND formula\"\n"
 						else if(str = "OR\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula OR formula\"\n"
@@ -50,8 +57,9 @@ fun invoke lexstream =
 						ifError := true
 					)	
 					else error := !error;
+					maybe(!error);
 					TextIO.output (outfile, !error);
-					TexIO.closeOut outfile
+					TextIO.closeOut outfile
 					)
 					end
 			
@@ -81,7 +89,13 @@ fun lexerToParser lexer =
 		if(booleanParser.sameToken(nextToken, dummyEOF)) then result
 		else (TextIO.output(TextIO.stdOut, "Warning: Unconsumed Tokens.\n"); result)
 	end	
-	
+
+val outfile4 = TextIO.openOut "lastToken";
+TextIO.closeOut(outfile4);
+val outfile3 = TextIO.openOut "Error";
+TextIO.closeOut(outfile3);	
+val outfile2 = TextIO.openOut "Yes";
+TextIO.closeOut(outfile2);	
 (*
 val fileName = CommandLine.arguments();
 val str = fileToString (hd(fileName));*)

@@ -9,6 +9,9 @@ struct
 structure Header = 
 struct
 val post_order = ref ""
+val syntaxError = ref ""
+
+val ifError = ref false
 
 fun IntStarInt(a, b) = Int.toString(a) ^ ":" ^ Int.toString(b) ^ ":";
 
@@ -153,7 +156,7 @@ numStates=numstates,initialState=STATE 0}
 end
 end
 local open Header in
-type pos = int
+type pos = int*int*int
 type arg = unit
 structure MlyValue = 
 struct
@@ -212,7 +215,7 @@ of  ( 0, ( ( _, ( MlyValue.stmt_list stmt_list1, stmt_list1left,
 stmt_list1right)) :: rest671)) => let val  result = MlyValue.program
  (fn _ => let val  (stmt_list as stmt_list1) = stmt_list1 ()
  in (
-post_order := stmt_list1 ^ ", " ^ "program -> stmt_list\n"; print(!post_order)
+post_order := stmt_list ^ ", " ^ "program -> stmt_list\n"; print(!post_order)
 )
 end)
  in ( LrTable.NT 0, ( result, stmt_list1left, stmt_list1right), 
@@ -222,7 +225,7 @@ end
 statement1right)) :: rest671)) => let val  result = MlyValue.stmt_list
  (fn _ => let val  (statement as statement1) = statement1 ()
  in (
-post_order := statement1 ^ ", " ^ "stmt_list -> statement"; !post_order
+post_order := statement ^ ", " ^ "stmt_list -> statement"; !post_order
 )
 end)
  in ( LrTable.NT 1, ( result, statement1left, statement1right), 
@@ -234,7 +237,7 @@ rest671)) => let val  result = MlyValue.stmt_list (fn _ => let val  (
 stmt_list as stmt_list1) = stmt_list1 ()
  val  (statement as statement1) = statement1 ()
  in (
-post_order := stmt_list1 ^ ", " ^ statement1 ^ ", " ^ "stmt_list -> stmt_list statement"; !post_order
+post_order := stmt_list ^ ", " ^ statement ^ ", " ^ "stmt_list -> stmt_list statement"; !post_order
 )
 end)
  in ( LrTable.NT 1, ( result, stmt_list1left, statement1right), 
@@ -273,7 +276,7 @@ formula1, _, _)) :: ( _, ( _, LPAREN1left, _)) :: rest671)) => let
  val  result = MlyValue.formula (fn _ => let val  (formula as formula1
 ) = formula1 ()
  in (
-post_order := "LPAREN \"(\", " ^ formula1 ^ ", " ^ "RPAREN \")\", " ^ "formula -> LPAREN formula RPAREN"; !post_order
+post_order := "LPAREN \"(\", " ^ formula ^ ", " ^ "RPAREN \")\", " ^ "formula -> LPAREN formula RPAREN"; !post_order
 )
 end)
  in ( LrTable.NT 3, ( result, LPAREN1left, RPAREN1right), rest671)
@@ -282,7 +285,7 @@ end
  ( _, NOT1left, _)) :: rest671)) => let val  result = MlyValue.formula
  (fn _ => let val  (formula as formula1) = formula1 ()
  in (
-post_order := "NOT \"NOT\", " ^ formula1 ^ ", " ^ "formula -> NOT formula"; !post_order
+post_order := "NOT \"NOT\", " ^ formula ^ ", " ^ "formula -> NOT formula"; !post_order
 )
 end)
  in ( LrTable.NT 3, ( result, NOT1left, formula1right), rest671)
