@@ -1,7 +1,5 @@
 val post_order = ref ""
 
-val ifError = ref false
-
 
 %%
 
