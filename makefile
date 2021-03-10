@@ -1,14 +1,12 @@
 ML = mlton
 
-LEX = ml-lex
+LEX = mllex
 
-YCC = ml-yacc
+YCC = mlyacc
 
 NAME = a2
 
 BOOL = boolean
-
-PARSE = parse.sml
 
 .PHONY: all
 all: $(NAME)
