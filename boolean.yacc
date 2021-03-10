@@ -15,8 +15,7 @@ val post_order = ref ""
 %eop EOF
 %noshift EOF
 
-%right THEN ELSE
-%right IF
+%right IF THEN ELSE
 %right IMPLIES
 %left EQUALS OR XOR AND
 %right NOT
