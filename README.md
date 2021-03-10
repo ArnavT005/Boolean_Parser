@@ -26,5 +26,7 @@ NOTE: My program creates three auxilliary files named "Yes", "Error" and "lastTo
 	  These files are used for reporting syntax error raised by the parser.
 	  I have also provided these files in the zip file as a failsafe.
 
+CLEAN command:
+Use 'make clean' to clear all the extra files (like .sig, lex.sml, aux files etc.)
 
 -------------------------------------------------------------------------------
