@@ -8,6 +8,8 @@ NAME = a2
 
 BOOL = boolean
 
+FILES = Error lastToken Yes
+
 .PHONY: all
 all: $(NAME)
 
@@ -28,4 +30,4 @@ $(BOOL).lex.sml: $(BOOL).lex
 
 .PHONY: clean
 clean:
-	rm $(BOOL).yacc.* $(BOOL).lex.* $(NAME)
+	rm $(BOOL).yacc.* $(BOOL).lex.* $(NAME) $(FILES) 
