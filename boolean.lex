@@ -20,7 +20,21 @@ fun reverse(ls) =
 	in
 		rev_iter(ls, [])
 	end
-	
+
+fun Bvalue(str) =
+	if(str = "TRUE") then true
+	else false
+
+fun Nvalue(str) =
+	let val charList = String.explode str
+	in
+		let fun	listToNum([], num) = num
+		|   listToNum(x :: xs, num) = listToNum(xs, 10 * num + Char.ord(x) - Char.ord(#"0"))
+		in
+			listToNum(charList, 0)
+		end
+	end
+		
 fun appendFile(str) = 
 	let val outfile = TextIO.openAppend "lastToken"
 	in(
@@ -80,6 +94,7 @@ val eof = fn () => (
 
 %header (functor booleanLexFun(structure Tokens: boolean_TOKENS));
 alpha = [A-Za-z];
+number = [0-9];
 ws = [\ \t];
 
 %%
@@ -94,9 +109,20 @@ ws = [\ \t];
 "XOR"			 => (append token_list "XOR" "XOR"; colinc(columnNum, yytext); appendFile("XOR\n"); tokenNum := !tokenNum + 1; T.XOR((!lineNum, !columnNum - 3, !tokenNum - 1), (!lineNum, !columnNum - 3, !tokenNum - 1)));
 "EQUALS"		 => (append token_list "EQUALS" "EQUALS"; colinc(columnNum, yytext); appendFile("EQUALS\n"); tokenNum := !tokenNum + 1; T.EQUALS((!lineNum, !columnNum - 6, !tokenNum - 1), (!lineNum, !columnNum - 6, !tokenNum - 1)));
 "IMPLIES"		 => (append token_list "IMPLIES" "IMPLIES"; colinc(columnNum, yytext); appendFile("IMPLIES\n"); tokenNum := !tokenNum + 1; T.IMPLIES((!lineNum, !columnNum - 7, !tokenNum - 1), (!lineNum, !columnNum - 7, !tokenNum - 1)));
-"IF"			 => (append token_list "IF" "IF"; colinc(columnNum, yytext); appendFile("IF\n"); tokenNum := !tokenNum + 1; T.IF((!lineNum, !columnNum - 2, !tokenNum - 1), (!lineNum, !columnNum - 2, !tokenNum - 1)));
-"THEN"           => (append token_list "THEN" "THEN"; colinc(columnNum, yytext); appendFile("THEN\n"); tokenNum := !tokenNum + 1; T.THEN((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
-"ELSE"			 => (append token_list "ELSE" "ELSE"; colinc(columnNum, yytext); appendFile("ELSE\n"); tokenNum := !tokenNum + 1; T.ELSE((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
-"TRUE" | "FALSE" => (append token_list "CONST" yytext; colinc(columnNum, yytext); appendFile("CONST\n"); tokenNum := !tokenNum + 1; T.CONST(yytext, (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
+"PLUS"			 => (append token_list "PLUS" "PLUS"; colinc(columnNum, yytext); appendFile("PLUS\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
+"MINUS"			 => (append token_list "MINUS" "MINUS"; colinc(columnNum, yytext); appendFile("MINUS\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 5, !tokenNum - 1), (!lineNum, !columnNum - 5, !tokenNum - 1)));
+"TIMES"			 => (append token_list "TIMES" "TIMES"; colinc(columnNum, yytext); appendFile("TIMES\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 5, !tokenNum - 1), (!lineNum, !columnNum - 5, !tokenNum - 1)));
+"NEGATE"		 => (append token_list "NEGATE" "NEGATE"; colinc(columnNum, yytext); appendFile("NEGATE\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 6, !tokenNum - 1), (!lineNum, !columnNum - 6, !tokenNum - 1)));
+"LESSTHAN"		 => (append token_list "LESSTHAN" "LESSTHAN"; colinc(columnNum, yytext); appendFile("LESSTHAN\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 8, !tokenNum - 1), (!lineNum, !columnNum - 8, !tokenNum - 1)));
+"GREATERTHAN"	 => (append token_list "GREATERTHAN" "GREATERTHAN"; colinc(columnNum, yytext); appendFile("GREATERTHAN\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 11, !tokenNum - 1), (!lineNum, !columnNum - 11, !tokenNum - 1)));
+"if"			 => (append token_list "if" "if"; colinc(columnNum, yytext); appendFile("if\n"); tokenNum := !tokenNum + 1; T.if((!lineNum, !columnNum - 2, !tokenNum - 1), (!lineNum, !columnNum - 2, !tokenNum - 1)));
+"then"           => (append token_list "then" "then"; colinc(columnNum, yytext); appendFile("then\n"); tokenNum := !tokenNum + 1; T.then((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
+"else"			 => (append token_list "else" "else"; colinc(columnNum, yytext); appendFile("else\n"); tokenNum := !tokenNum + 1; T.else((!lineNum, !columnNum - 4, !tokenNum - 1), (!lineNum, !columnNum - 4, !tokenNum - 1)));
+"fi"			 => (append token_list "fi" "fi"; colinc(columnNum, yytext); appendFile("fi\n"); tokenNum := !tokenNum + 1; T.fi((!lineNum, !columnNum - 2, !tokenNum - 1), (!lineNum, !columnNum - 2, !tokenNum - 1)));
+"let"			 => (append token_list "let" "let"; colinc(columnNum, yytext); appendFile("let\n"); tokenNum := !tokenNum + 1; T.let((!lineNum, !columnNum - 3, !tokenNum - 1), (!lineNum, !columnNum - 3, !tokenNum - 1)));
+"in"			 => (append token_list "in" "in"; colinc(columnNum, yytext); appendFile("in\n"); tokenNum := !tokenNum + 1; T.in((!lineNum, !columnNum - 2, !tokenNum - 1), (!lineNum, !columnNum - 2, !tokenNum - 1)));
+"end"			 => (append token_list "end" "end"; colinc(columnNum, yytext); appendFile("end\n"); tokenNum := !tokenNum + 1; T.end((!lineNum, !columnNum - 3, !tokenNum - 1), (!lineNum, !columnNum - 3, !tokenNum - 1)));
+"TRUE" | "FALSE" => (append token_list "CONST_Bool" yytext; colinc(columnNum, yytext); appendFile("CONST_Bool\n"); tokenNum := !tokenNum + 1; T.CONST_Bool(Bvalue(yytext), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
+{number}+		 => (append token_list "CONST_Int" yytext; colinc(columnNum, yytext); appendFile("CONST_Int\n"); tokenNum := !tokenNum + 1; T.CONST_Int(Nvalue(yytext), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
 {alpha}+         => (append token_list "ID" yytext; colinc(columnNum, yytext); appendFile("ID\n"); tokenNum := !tokenNum + 1; T.ID(yytext, (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
 .                => (error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex());

@@ -5,8 +5,10 @@ val post_order = ref ""
 
 %name boolean
 
-%term EOF | TERM | CONST of string | NOT | AND | OR  | XOR  |
-	  EQUALS | IMPLIES | IF | THEN | ELSE | LPAREN | RPAREN | ID of string
+%term EOF | TERM | CONST_Bool of bool | CONST_Int of int | NOT | AND | OR  | XOR  |
+	  EQUALS | IMPLIES | if | then | else | LPAREN | RPAREN | ID of string |
+	  PLUS | MINUS | TIMES | NEGATE | EQUALS | LESSTHAN | GREATERTHAN | fi | let | in | end
+(*Add new operator tokens and other keywords*)
 
 %nonterm program of unit | stmt_list of string | statement of string | formula of string
 
