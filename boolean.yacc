@@ -74,15 +74,22 @@ stmt_list: statement (
 statement: formula (
 			  post_order := first(formula) ^ ", " ^ "statement -> formula";
 			  statNum := !statNum + 1;
-			  let val v = AST.evalExp(second(formula), !funcValEnv)
+			  let val v = AST.evalExp(second(formula), !funcValEnv);
+			  	  val t = AST.typeCheckExp(second(formula), !funcTypEnv)
 			  in 
 			  	(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":" ^ valToString(v))
 			  end		
 		 )
 		| FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula (
 			post_order := "FUN \"fun\", ID \"" ^ ID1 ^ "\", LPAREN \"(\", ID \"" ^ ID2 ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\"" ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula";
-			funcValEnv := (ID1, AST.Lambda(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2))) :: !funcValEnv;
-			(!post_order, "")
+			let val v = AST.Lambda(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2));
+				val t = AST.typeCheckExp(AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2)), !funcTypEnv);
+			in (
+				funcValEnv := (ID1, v) :: !funcValEnv;
+				funcTypEnv := (ID1, t) :: !funcTypEnv;
+				(!post_order, "")
+			)
+			end	
 		)
 
 declaration: ID EQ formula (
