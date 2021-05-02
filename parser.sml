@@ -43,18 +43,71 @@ fun invoke lexstream =
 						val str = readToken(infile, num - 1, "")
 					in (	
 						if(not (!ifError)) then (
-							if(str = "TERM\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n"
-							else if(str = "CONST\n" orelse str = "ID\n" orelse str = "RPAREN\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula BINOP formula\"\n"
+							if(str = "TERM\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"stmt_list -> stmt_list TERM statement\"\n"
+							else if(str = "ID\n") then 
+								let val num1 = num - 2
+								in
+									if(num1 >= 1) then
+										let val infile1 = TextIO.openIn "lastToken";
+											val str1 = readToken(infile1, num1, "");
+										in
+											if(str1 = "FUN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+											else if(str1 = "LPAREN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula, statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+											else error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"declaration -> ID EQ formula\"\n"
+										end
+									else
+										error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"declaration -> ID EQ formula\"\n"
+								end
 							else if(str = "NOT\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> NOT formula\"\n"
 							else if(str = "AND\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula AND formula\"\n"
 							else if(str = "OR\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula OR formula\"\n"
 							else if(str = "XOR\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula XOR formula\"\n"
 							else if(str = "EQUALS\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula EQUALS formula\"\n"
 							else if(str = "IMPLIES\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula IMPLIES formula\"\n"
+							else if(str = "NEGATE\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> NEGATE formula\"\n"
+							else if(str = "PLUS\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula PLUS formula\"\n"
+							else if(str = "MINUS\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula MINUS formula\"\n"
+							else if(str = "TIMES\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula TIMES formula\"\n"
+							else if(str = "LESSTHAN\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula LESSTHAN formula\"\n"
+							else if(str = "GREATERTHAN\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> formula GREATERTHAN formula\"\n"
 							else if(str = "IF\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
 							else if(str = "THEN\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
 							else if(str = "ELSE\n") then error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"formula -> IF formula THEN formula ELSE formula\"\n"
-							else if(str = "LPAREN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LPAREN formula RPAREN\"\n"
+							else if(str = "LET\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LET declaration IN formula END\"\n"
+							else if(str = "IN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LET declaration IN formula END\"\n"
+							else if(str = "EQ\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"declaration -> ID EQ formula\"\n"
+							else if(str = "ARROW\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"typ -> typ ARROW typ\"\n"
+							else if(str = "FN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+							else if(str = "FUN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+							else if(str = "COLON\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula, statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+							else if(str = "DEF\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula, statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+							else if(str = "LPAREN\n") then 
+								let val num1 = num - 2
+								in
+									if(num1 >= 1) then
+										let val infile1 = TextIO.openIn "lastToken";
+											val str1 = readToken(infile1, num1, "");
+										in
+											if(str1 = "FN\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+											else if(str1 = "ID\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+											else error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LPAREN formula RPAREN, formula -> LPAREN formula formula RPAREN, typ -> LPAREN typ RPAREN\"\n"
+										end
+									else
+										error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LPAREN formula RPAREN, formula -> LPAREN formula formula RPAREN, typ -> LPAREN typ RPAREN\"\n"
+								end
+							else if(str = "RPAREN\n") then 
+								let val num1 = num - 2
+								in
+									if(num1 >= 1) then
+										let val infile1 = TextIO.openIn "lastToken";
+											val str1 = readToken(infile1, num1, "")
+										in
+											if(str1 = "INT\n" orelse str1 = "BOOL\n") then error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula, statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula\"\n"
+											else error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LPAREN formula RPAREN, formula -> LPAREN formula formula RPAREN, typ -> LPAREN typ RPAREN\"\n"
+										end
+									else
+										error := "Syntax Error: " ^ Int.toString(first(pos)) ^ ":" ^  Int.toString(second(pos)) ^ ":" ^ "\"formula -> LPAREN formula RPAREN, formula -> LPAREN formula formula RPAREN, typ -> LPAREN typ RPAREN\"\n"
+								end	
 							else error := "Syntax Error:" ^ Int.toString(first(pos)) ^ ":" ^ Int.toString(second(pos)) ^ ":" ^ "\"program -> stmt_list\"\n";
 							ifError := true
 						)	
