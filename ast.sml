@@ -13,19 +13,19 @@ datatype Generic = INT | BOOL | N | ARROW of Generic * Generic
 datatype decl = ValDecl of id * exp
 
 and exp = NumConst of int
-		    | BoolConst of bool
-    	  | VarExp of id
-		    | BinExp of binop * exp * exp
+        | BoolConst of bool
+        | VarExp of id
+        | BinExp of binop * exp * exp
         | UnExp of unary * exp
-		    | ConExp of exp * exp * exp
+        | ConExp of exp * exp * exp
         | LetExp of decl * exp
         | AbsExp of Generic * id * Generic * exp * Generic
         | AppExp of exp * exp
         | NullExp
-				       
+             
 datatype value =  IntVal of int
-		            | BoolVal of bool
-                | Lambda of Generic * id * Generic * exp * Generic
+                | BoolVal of bool
+                | Lambda of Generic * id * Generic * exp * Generic * (id * value) list
                 | NA
 
 
@@ -74,8 +74,8 @@ fun typEnvAdd (var:id, t:TYPE, env:typEnvironment) = (var, t)::env
 
 fun valEnvLookup (var:id, env:valEnvironment) =
     case List.find(fn (x, _) => x = var) env of
-				SOME (x, v) => v
-		|   NONE        => NA
+        SOME (x, v) => v
+    |   NONE        => NA
 
 fun typEnvLookup (var:id, env:typEnvironment) =
     case List.find(fn (x, _) => x = var) env of
@@ -176,32 +176,32 @@ fun typeToString(TYPEB(b, g1, g2)) =
 fun valToString(IntVal i) = Int.toString(i)
 |   valToString(BoolVal b) = Bool.toString(b)
 |   valToString(NA)        = "Value of expression cannot be determined"
-|   valToString(Lambda(g1, x, gx, e, ge)) = "Lambda type value"
+|   valToString(Lambda(g1, x, gx, e, ge, env)) = "Lambda type value"
 
 
 fun evalExp(e:exp, env:valEnvironment) =
     case e of
-	      NumConst i                  => IntVal i
+        NumConst i                  => IntVal i
       | BoolConst b                 => BoolVal b  
-      | VarExp x                    => valEnvLookup(x, env)			  
+      | VarExp x                    => valEnvLookup(x, env)       
       | BinExp (b, e1, e2)          => evalBinExp(b, e1, e2, env)
       | UnExp(u, e)                 => evalUnExp(u, e, env)
       | ConExp(e1, e2, e3)          => evalTerExp(e1, e2, e3, env)
       | LetExp(ValDecl(x, e1), e2)  =>
-  	      let val v = evalExp(e1, env)
-	        in
-	             evalExp(e2, valEnvAdd(x, v, env))
-          end		   
-      | AbsExp(g1, x, gx, e, ge)    => Lambda(g1, x, gx, e, ge)
+          let val v = evalExp(e1, env)
+          in
+               evalExp(e2, valEnvAdd(x, v, env))
+          end      
+      | AbsExp(g1, x, gx, e, ge)    => Lambda(g1, x, gx, e, ge, env)
       | AppExp(e1, e2)              =>
           let val v2 = evalExp(e2, env);
               val v1 = evalExp(e1, env)
           in
             case v1 of
-              IntVal i                 => NA
-            | BoolVal b                => NA
-            | NA                       => NA
-            | Lambda(g, x, gx, e, ge)  => evalExp(e, valEnvAdd(x, v2, env))
+              IntVal i                      => NA
+            | BoolVal b                     => NA
+            | NA                            => NA
+            | Lambda(g, x, gx, e, ge, ev)   => evalExp(e, valEnvAdd(x, v2, ev)@env)
           end    
       | _   => NA                          
 and

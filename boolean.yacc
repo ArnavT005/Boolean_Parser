@@ -1,9 +1,10 @@
 
 val post_order = ref ""
 val statNum = ref 0
+(*storing global variables*)
 val funcValEnv = ref ([]: AST.valEnvironment)
 val funcTypEnv = ref ([]: AST.typEnvironment)
-(*storing global variables*)
+
 fun first(f, _) = f
 fun second(_, s) = s
 
@@ -18,9 +19,9 @@ fun boolToString(b) =
 %name boolean
 
 %term EOF | TERM | CONST_Bool of bool | CONST_Int of int | NOT of int * int | AND of int * int | OR of int * int | XOR of int * int |
-	  EQUALS of int * int | IMPLIES of int * int | IF | THEN | ELSE | LPAREN | RPAREN | ID of AST.id |
-	  PLUS of int * int | MINUS of int * int | TIMES of int * int | NEGATE of int * int | LESSTHAN of int * int | GREATERTHAN of int * int | FI | LET | IN | END | EQ |
-	  COLON | FN | FUN | ARROW | DEF | INT | BOOL
+	  EQUALS of int * int | IMPLIES of int * int | IF | THEN | ELSE | FI | LPAREN | RPAREN | ID of AST.id |
+	  PLUS of int * int | MINUS of int * int | TIMES of int * int | NEGATE of int * int | LESSTHAN of int * int | GREATERTHAN of int * int | 
+	  LET | IN | END | EQ | COLON | FN | FUN | ARROW | DEF | INT | BOOL
 
 (*Add new operator tokens and other keywords*)
 
@@ -31,7 +32,6 @@ fun boolToString(b) =
 %eop EOF
 %noshift EOF
 
-(*%right IF THEN ELSE*)
 %right DEF EQ
 %right IMPLIES
 %left EQUALS OR XOR AND
@@ -74,9 +74,9 @@ statement: formula (
 			  end		
 		 )
 		| FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula (
-			post_order := "FUN \"fun\", ID \"" ^ ID1 ^ "\", LPAREN \"(\", ID \"" ^ ID2 ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\"" ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula";
+			post_order := "FUN \"fun\", ID \"" ^ ID1 ^ "\", LPAREN \"(\", ID \"" ^ ID2 ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\", " ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula";
 			statNum := !statNum + 1;
-			let val v = AST.Lambda(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2));
+			let val v = AST.Lambda(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2), !funcValEnv);
 				val t = AST.typeCheckExp(AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2)), (ID1, AST.TYPESAFE(AST.ARROW(second(typ1), second(typ2)))) :: !funcTypEnv);
 				val str = AST.typeToString(t)
 			in (
@@ -162,14 +162,14 @@ formula: CONST_Bool (
 	   	)
 	   | formula GREATERTHAN formula (
 	   		post_order := first(formula1) ^ ", " ^ "GREATERTHAN \"GREATERTHAN\", " ^ first(formula2) ^ ", " ^ "formula -> formula GREATERTHAN formula" ; 
-	   		(!post_order,AST.BinExp(AST.Gt(GREATERTHAN), second(formula1), second(formula2)))
+	   		(!post_order, AST.BinExp(AST.Gt(GREATERTHAN), second(formula1), second(formula2)))
 	   	)
 	   | LPAREN formula formula RPAREN (
 	   		post_order := "LPAREN \"(\", " ^ first(formula1) ^ ", " ^ first(formula2) ^ ", RPAREN \")\", formula -> LPAREN formula formula RPAREN";
 	   		(!post_order, AST.AppExp(second(formula1), second(formula2)))
 	   )
 	   | FN LPAREN ID COLON typ RPAREN COLON typ DEF formula (
-			post_order := "FN \"fn\", LPAREN \"(\", ID \"" ^ ID ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\"" ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", function -> FN LPAREN ID COLON type RPAREN COLON typ DEF formula";
+			post_order := "FN \"fn\", LPAREN \"(\", ID \"" ^ ID ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\", " ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula";
 			(!post_order, AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), ID, second(typ1), second(formula), second(typ2)))
 		) 
 
@@ -186,3 +186,4 @@ typ:	INT (post_order := "INT \"int\", typ -> INT"; (!post_order, AST.INT))
 	
 		 
 		 
+

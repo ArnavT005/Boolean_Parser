@@ -95,10 +95,12 @@ val eof = fn () => (
 %header (functor booleanLexFun(structure Tokens: boolean_TOKENS));
 alpha = [A-Za-z];
 number = [0-9];
-ws = [\ \t\r];
+ws = [\ \t];
 
 %%
 \n               => (lineNum := !lineNum + 1; columnNum := 1; lex());
+\r               => (lineNum := !lineNum + 1; columnNum := 1; lex());
+\r\n             => (lineNum := !lineNum + 1; columnNum := 1; lex());
 {ws}+            => (colinc(columnNum, yytext); lex());
 ";"      		 => (append token_list "TERM" ";"; colinc(columnNum, yytext); appendFile("TERM\n"); tokenNum := !tokenNum + 1; T.TERM((!lineNum, !columnNum - 1, !tokenNum - 1),(!lineNum, !columnNum - 1, !tokenNum - 1)));
 "("				 => (append token_list "LPAREN" "("; colinc(columnNum, yytext); appendFile("LPAREN\n"); tokenNum := !tokenNum + 1; T.LPAREN((!lineNum, !columnNum - 1, !tokenNum - 1), (!lineNum, !columnNum - 1, !tokenNum - 1)));
@@ -135,3 +137,4 @@ ws = [\ \t\r];
 {alpha}({number} | {alpha})* => (append token_list "ID" yytext; colinc(columnNum, yytext); appendFile("ID\n"); tokenNum := !tokenNum + 1; T.ID(yytext, (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1), (!lineNum, !columnNum - String.size(yytext), !tokenNum - 1)));
 {number}({number} | {alpha})* => (error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex());
 .                => (error(!lineNum, !columnNum, yytext); colinc(columnNum, yytext); lex());
+
