@@ -13,15 +13,14 @@ fun boolToString(b) =
 	if(b) then "TRUE"
 	else "FALSE"
 
-
 %%
 
 %name boolean
 
-%term EOF | TERM | CONST_Bool of bool | CONST_Int of int | NOT of int * int | AND of int * int | OR of int * int | XOR of int * int |
-	  EQUALS of int * int | IMPLIES of int * int | IF | THEN | ELSE | FI | LPAREN | RPAREN | ID of AST.id |
+%term EOF | TERM | CONST_Bool of bool * AST.double | CONST_Int of int * AST.double | NOT of int * int | AND of int * int | OR of int * int | XOR of int * int |
+	  EQUALS of int * int | IMPLIES of int * int | IF of AST.cord | THEN | ELSE | FI of AST.cord | LPAREN | RPAREN | ID of AST.id * AST.double |
 	  PLUS of int * int | MINUS of int * int | TIMES of int * int | NEGATE of int * int | LESSTHAN of int * int | GREATERTHAN of int * int | 
-	  LET | IN | END | EQ | COLON | FN | FUN | ARROW | DEF | INT | BOOL
+	  LET of AST.cord | IN | END of AST.cord | EQ | COLON | FN of int * int | FUN of int * int | ARROW | DEF | INT | BOOL
 
 (*Add new operator tokens and other keywords*)
 
@@ -74,35 +73,38 @@ statement: formula (
 			  end		
 		 )
 		| FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula (
-			post_order := "FUN \"fun\", ID \"" ^ ID1 ^ "\", LPAREN \"(\", ID \"" ^ ID2 ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\", " ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula";
+			post_order := "FUN \"fun\", ID \"" ^ first(ID1) ^ "\", LPAREN \"(\", ID \"" ^ first(ID2) ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\", " ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", statement -> FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula";
 			statNum := !statNum + 1;
-			let val v = AST.Lambda(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2), !funcValEnv);
-				val t = AST.typeCheckExp(AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2)), (ID1, AST.TYPESAFE(AST.ARROW(second(typ1), second(typ2)))) :: !funcTypEnv);
+			let val initialEnv = ref [];
+				val v = AST.Lambda(AST.ARROW(second(typ1), second(typ2)), first(ID2), second(typ1), second(formula), second(typ2), initialEnv);
+				val enclosingEnv = (first(ID1), v) :: !funcValEnv;
+				val () = initialEnv := enclosingEnv;
+				val t = AST.typeCheckExp(AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), first(ID2), second(typ1), second(formula), second(typ2), FUN, second(AST.expCord(second(formula)))), (first(ID1), AST.TYPESAFE(AST.ARROW(second(typ1), second(typ2)))) :: !funcTypEnv);
 				val str = AST.typeToString(t)
 			in (
-				funcValEnv := (ID1, v) :: !funcValEnv;
-				funcTypEnv := (ID1, t) :: !funcTypEnv;
-				(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":\n" ^ "Abstract Syntax Tree: " ^ AST.printf(ID1, AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), ID2, second(typ1), second(formula), second(typ2))) ^ "\n" ^ str)
+				funcValEnv := (first(ID1), v) :: !funcValEnv;
+				funcTypEnv := (first(ID1), t) :: !funcTypEnv;
+				(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":\n" ^ "Abstract Syntax Tree: " ^ AST.printf(first(ID1), AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), first(ID2), second(typ1), second(formula), second(typ2), FUN, second(AST.expCord(second(formula))))) ^ "\n" ^ str)
 			)
 			end	
 		)
 
 declaration: ID EQ formula (
-				post_order := "ID \"" ^ ID ^ "\", EQ \"=\", " ^ first(formula) ^ ", declaration -> ID EQ formula"; 
-				(!post_order, AST.ValDecl(ID, second(formula)))
+				post_order := "ID \"" ^ first(ID) ^ "\", EQ \"=\", " ^ first(formula) ^ ", declaration -> ID EQ formula"; 
+				(!post_order, AST.ValDecl(first(ID), second(formula)))
 			)
 
 formula: CONST_Bool (
-			post_order := "CONST_Bool \"" ^ boolToString(CONST_Bool) ^ "\", " ^ "formula -> CONST_Bool"; 
-			(!post_order, AST.BoolConst(CONST_Bool))
+			post_order := "CONST_Bool \"" ^ boolToString(first(CONST_Bool)) ^ "\", " ^ "formula -> CONST_Bool"; 
+			(!post_order, AST.BoolConst(first(CONST_Bool), first(second(CONST_Bool)), second(second(CONST_Bool))))
 		)
 	   | CONST_Int (
-	   		post_order := "CONST_Int \"" ^ Int.toString (CONST_Int) ^ "\", " ^ "formula -> CONST_Int"; 
-	   		(!post_order, AST.NumConst(CONST_Int))
+	   		post_order := "CONST_Int \"" ^ Int.toString (first(CONST_Int)) ^ "\", " ^ "formula -> CONST_Int"; 
+	   		(!post_order, AST.NumConst(first(CONST_Int), first(second(CONST_Int)), second(second(CONST_Int))))
 	   	)
 	   | ID (
-	   		post_order := "ID \"" ^ ID ^ "\", " ^ "formula -> ID"; 
-	   		(!post_order, AST.VarExp(ID))
+	   		post_order := "ID \"" ^ first(ID) ^ "\", " ^ "formula -> ID"; 
+	   		(!post_order, AST.VarExp(first(ID), first(second(ID)), second(second(ID))))
 	    )
 	   | LPAREN formula RPAREN (
 	   		post_order := "LPAREN \"(\", " ^ first(formula) ^ ", " ^ "RPAREN \")\", " ^ "formula -> LPAREN formula RPAREN"; 
@@ -110,67 +112,67 @@ formula: CONST_Bool (
 	   	)
 	   | NOT formula (
 	   		post_order := "NOT \"NOT\", " ^ first(formula) ^ ", " ^ "formula -> NOT formula"; 
-	   		(!post_order, AST.UnExp(AST.Not(NOT), second(formula)))
+	   		(!post_order, AST.UnExp(AST.Not(NOT), second(formula), NOT, second(AST.expCord(second(formula)))))
 	   	)
 	   | formula IMPLIES formula (
 	   		post_order := first(formula1) ^ ", " ^ "IMPLIES \"IMPLIES\", " ^ first(formula2) ^ ", " ^ "formula -> formula IMPLIES formula"; 
-	   		(!post_order,AST.BinExp(AST.Implies(IMPLIES), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Implies(IMPLIES), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula AND formula (
 	   		post_order := first(formula1) ^ ", " ^ "AND \"AND\", " ^ first(formula2) ^ ", " ^ "formula -> formula AND formula" ; 
-	   		(!post_order,AST.BinExp(AST.And(AND), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.And(AND), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula OR formula (
 	   		post_order := first(formula1) ^ ", " ^ "OR \"OR\", " ^ first(formula2) ^ ", " ^ "formula -> formula OR formula"; 
-	   		(!post_order,AST.BinExp(AST.Or(OR), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Or(OR), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula XOR formula (
 	   		post_order := first(formula1) ^ ", " ^ "XOR \"XOR\", " ^ first(formula2) ^ ", " ^ "formula -> formula XOR formula"; 
-	   		(!post_order,AST.BinExp(AST.Xor(XOR), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Xor(XOR), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula EQUALS formula (
 	   		post_order := first(formula1) ^ ", " ^ "EQUALS \"EQUALS\", " ^ first(formula2) ^ ", " ^ "formula -> formula EQUALS formula"; 
-	   		(!post_order,AST.BinExp(AST.Eq(EQUALS), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Eq(EQUALS), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | IF formula THEN formula ELSE formula FI (
 	   		post_order := "IF \"if\", " ^ first(formula1) ^ ", " ^ "THEN \"then\", " ^ first(formula2) ^ ", " ^ "ELSE \"else\", " ^ first(formula3) ^ ", FI \"fi\", " ^ "formula -> IF formula THEN formula ELSE formula FI"; 
-	   		(!post_order, AST.ConExp(second(formula1), second(formula2), second(formula3)))
+	   		(!post_order, AST.ConExp(second(formula1), second(formula2), second(formula3), IF, FI))
 	   	)
 	   | LET declaration IN formula END (
 	   		post_order := "LET \"let\", " ^ first(declaration) ^ ", IN \"in\", " ^ first(formula) ^ ", END \"end\", " ^ "formula -> LET declaration IN formula END"; 
-	   		(!post_order, AST.LetExp(second(declaration), second(formula)))
+	   		(!post_order, AST.LetExp(second(declaration), second(formula), LET, END))
 	   	)
 	   | formula PLUS formula (
 	   		post_order := first(formula1) ^ ", " ^ "PLUS \"PLUS\", " ^ first(formula2) ^ ", " ^ "formula -> formula PLUS formula" ; 
-	   		(!post_order,AST.BinExp(AST.Add(PLUS), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Add(PLUS), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula MINUS formula (
 	   		post_order := first(formula1) ^ ", " ^ "MINUS \"MINUS\", " ^ first(formula2) ^ ", " ^ "formula -> formula MINUS formula" ; 
-	   		(!post_order,AST.BinExp(AST.Sub(MINUS), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Sub(MINUS), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula TIMES formula (
 	   		post_order := first(formula1) ^ ", " ^ "TIMES \"TIMES\", " ^ first(formula2) ^ ", " ^ "formula -> formula TIMES formula" ; 
-	   		(!post_order,AST.BinExp(AST.Mul(TIMES), second(formula1), second(formula2)))
+	   		(!post_order,AST.BinExp(AST.Mul(TIMES), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | NEGATE formula (
 	   		post_order := "NEGATE \"NEGATE\", " ^ first(formula) ^ ", " ^ "formula -> NEGATE formula"; 
-	   		(!post_order, AST.UnExp(AST.Neg(NEGATE), second(formula)))
+	   		(!post_order, AST.UnExp(AST.Neg(NEGATE), second(formula), NEGATE, second(AST.expCord(second(formula)))))
 	   	)
 	   | formula LESSTHAN formula (
 	   		post_order := first(formula1) ^ ", " ^ "LESSTHAN \"LESSTHAN\", " ^ first(formula2) ^ ", " ^ "formula -> formula LESSTHAN formula" ; 
-	   		(!post_order, AST.BinExp(AST.Lt(LESSTHAN), second(formula1), second(formula2)))
+	   		(!post_order, AST.BinExp(AST.Lt(LESSTHAN), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | formula GREATERTHAN formula (
 	   		post_order := first(formula1) ^ ", " ^ "GREATERTHAN \"GREATERTHAN\", " ^ first(formula2) ^ ", " ^ "formula -> formula GREATERTHAN formula" ; 
-	   		(!post_order, AST.BinExp(AST.Gt(GREATERTHAN), second(formula1), second(formula2)))
+	   		(!post_order, AST.BinExp(AST.Gt(GREATERTHAN), second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   	)
 	   | LPAREN formula formula RPAREN (
 	   		post_order := "LPAREN \"(\", " ^ first(formula1) ^ ", " ^ first(formula2) ^ ", RPAREN \")\", formula -> LPAREN formula formula RPAREN";
-	   		(!post_order, AST.AppExp(second(formula1), second(formula2)))
+	   		(!post_order, AST.AppExp(second(formula1), second(formula2), first(AST.expCord(second(formula1))), second(AST.expCord(second(formula2)))))
 	   )
 	   | FN LPAREN ID COLON typ RPAREN COLON typ DEF formula (
-			post_order := "FN \"fn\", LPAREN \"(\", ID \"" ^ ID ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\", " ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula";
-			(!post_order, AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), ID, second(typ1), second(formula), second(typ2)))
+			post_order := "FN \"fn\", LPAREN \"(\", ID \"" ^ first(ID) ^ "\", COLON \":\", " ^ first(typ1) ^ ", RPAREN \")\", COLON \":\", " ^ first(typ2) ^ ", DEF \"=>\", " ^ first(formula) ^ ", formula -> FN LPAREN ID COLON typ RPAREN COLON typ DEF formula";
+			(!post_order, AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), first(ID), second(typ1), second(formula), second(typ2), FN, second(AST.expCord(second(formula)))))
 		) 
 
 typ:	INT (post_order := "INT \"int\", typ -> INT"; (!post_order, AST.INT))
@@ -183,7 +185,3 @@ typ:	INT (post_order := "INT \"int\", typ -> INT"; (!post_order, AST.INT))
 		post_order := "LPAREN \"(\", " ^ first(typ) ^ ", RPAREN \")\", typ -> LPAREN typ RPAREN";
 		(!post_order, second(typ))
 	)
-	
-		 
-		 
-
