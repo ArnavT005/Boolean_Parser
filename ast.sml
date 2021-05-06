@@ -313,7 +313,7 @@ fun typeCheckExp(e:exp, env:typEnvironment) =
                   | TYPEC(_, _, _, _, _) => t2
                   | TYPELAbs(_, _, _, _) => t2
                   | TYPELApp(_, _, _, _) => t2
-                  | TYPESAFE(g2)   =>
+                  | TYPESAFE(g2)   => (
                       let val t1 = typeCheckExp(e1, env)
                       in
                         case t1 of
@@ -330,6 +330,7 @@ fun typeCheckExp(e:exp, env:typEnvironment) =
                                 | ARROW(gf, gs) => if(gf = g2) then TYPESAFE(gs) else TYPELApp(g1, g2, c1, c2)
                           )   
                       end 
+                    )  
               end                        
         | NullExp   => TYPESAFE(N)
     end      
