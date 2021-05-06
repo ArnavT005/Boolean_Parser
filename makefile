@@ -4,7 +4,7 @@ LEX = mllex
 
 YCC = mlyacc
 
-NAME = a2
+NAME = a3
 
 BOOL = boolean
 

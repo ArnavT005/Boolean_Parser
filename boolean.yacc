@@ -49,8 +49,8 @@ fun boolToString(b) =
 
 program: stmt_list (
 			post_order := first(stmt_list) ^ ", " ^ "program -> stmt_list\n"; 
-			print(!post_order); 
-			print("\n" ^ second(stmt_list) ^ "\n")
+			print("Parser Output\n\n" ^ !post_order); 
+			print("\nSemantic Analysis\n\n" ^ second(stmt_list) ^ "\n\n")
 		)
 
 stmt_list: statement (
@@ -59,17 +59,22 @@ stmt_list: statement (
 		 )
 		 | stmt_list TERM statement (
 		 	  post_order := first(stmt_list) ^ ", " ^ "TERM \";\", " ^ first(statement) ^ ", " ^ "stmt_list -> stmt_list TERM statement"; 
-		 	  (!post_order, second(stmt_list) ^ "\n" ^ second(statement))
+		 	  (!post_order, second(stmt_list) ^ "\n\n" ^ second(statement))
 		 )
 
 statement: formula (
 			  post_order := first(formula) ^ ", " ^ "statement -> formula";
 			  statNum := !statNum + 1;
 			  let val t = AST.typeCheckExp(second(formula), !funcTypEnv);
-			  	  val v = AST.evalExp(second(formula), !funcValEnv)
-			  	  val str = AST.typeToString(t)
+			  	  val v = AST.evalExp(second(formula), !funcValEnv);
+			  	  val strType = AST.typeToString(t)
+			  	  val strValue = (
+			  	  	case t of
+			  	  		 AST.TYPESAFE(g) => AST.valToString(v)
+			  	  		|_               => AST.valToString(AST.NA)
+			  	  )
 			  in 
-			  	(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":\n" ^ "Abstract Syntax Tree: " ^ AST.printAST(second(formula)) ^ "\n" ^ str ^ "\nEvaluated Value: " ^ AST.valToString(v))
+			  	(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":\n" ^ "Abstract Syntax Tree: " ^ AST.printAST(second(formula)) ^ "\n" ^ strType ^ "\nEvaluated Value: " ^ strValue)
 			  end		
 		 )
 		| FUN ID LPAREN ID COLON typ RPAREN COLON typ DEF formula (
@@ -80,11 +85,11 @@ statement: formula (
 				val enclosingEnv = (first(ID1), v) :: !funcValEnv;
 				val () = initialEnv := enclosingEnv;
 				val t = AST.typeCheckExp(AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), first(ID2), second(typ1), second(formula), second(typ2), FUN, second(AST.expCord(second(formula)))), (first(ID1), AST.TYPESAFE(AST.ARROW(second(typ1), second(typ2)))) :: !funcTypEnv);
-				val str = AST.typeToString(t)
+				val strType = AST.typeToString(t)
 			in (
 				funcValEnv := (first(ID1), v) :: !funcValEnv;
 				funcTypEnv := (first(ID1), t) :: !funcTypEnv;
-				(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":\n" ^ "Abstract Syntax Tree: " ^ AST.printf(first(ID1), AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), first(ID2), second(typ1), second(formula), second(typ2), FUN, second(AST.expCord(second(formula))))) ^ "\n" ^ str)
+				(!post_order, "Statement:" ^ Int.toString(!statNum) ^ ":\n" ^ "Abstract Syntax Tree: " ^ AST.printf(first(ID1), AST.AbsExp(AST.ARROW(second(typ1), second(typ2)), first(ID2), second(typ1), second(formula), second(typ2), FUN, second(AST.expCord(second(formula))))) ^ "\n" ^ strType)
 			)
 			end	
 		)

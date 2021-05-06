@@ -85,7 +85,7 @@ fun syntaxErrorIfAny() =
 
 val eof = fn () => (
 	if(!ifError = false) then
-		(print "["; printString(reverse(!token_list)); print "]\n"; syntaxErrorIfAny(); Tokens.EOF((!lineNum, !columnNum, !tokenNum), (!lineNum, !columnNum, !tokenNum)))
+		(print "Lexer Output\n\n["; printString(reverse(!token_list)); print "]\n\n"; syntaxErrorIfAny(); Tokens.EOF((!lineNum, !columnNum, !tokenNum), (!lineNum, !columnNum, !tokenNum)))
 	else
 		OS.Process.exit(OS.Process.success))
 

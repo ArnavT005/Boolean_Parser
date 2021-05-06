@@ -1,5 +1,5 @@
 -----------------------------------------------------------------------------
-Assignment-2: Instructions for execution
+Assignment-3: Instructions for execution
 
 -----------------------------------------------------------------------------
 -----------------------------------------------------------------------------
@@ -11,7 +11,7 @@ Main code files used by me:
 - ast.sml
 - makefile
 
-a2.mlb is the loader file and will form an executable named a2 when compiled.
+a3.mlb is the loader file and will form an executable named a3 when compiled.
 
 NOTE: mlton (along with mllex and mlyacc) should be available for proper execution
 	  of makefile.
@@ -21,7 +21,7 @@ make
 (or make all)
 
 Instructions to run the executable:
-./a2 <file_name>
+./a3 <file_name>
 
 NOTE: My program creates three auxilliary files named "Yes", "Error" and "lastToken". 
 	  These files are used for reporting syntax error raised by the parser.
