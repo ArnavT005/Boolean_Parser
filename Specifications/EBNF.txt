@@ -1,0 +1,80 @@
+program                 ::= statement_list.
+
+statement_list          ::= statement | statement_list ";" statement.
+
+statement               ::= formula | global_function.
+
+global_function         ::= "fun" ID "(" ID ":" typ ")" ":" typ "=>" formula.
+
+typ                     ::= type_operand | type_operand "->" type_operand.
+
+type_operand            ::= "int" | "bool" | "(" typ ")".
+
+formula                 ::= lambda_formula | declaration_formula | evaluation_formula.
+
+lambda_formula          ::= "fn" "(" ID ":" typ ")" ":" typ "=>" formula.
+
+declaration_formula     ::= "let" declaration "in" formula "end".
+
+declaration             ::= ID "=" formula.
+
+evaluation_formula      ::= conditional_formula | boolean_formula | integer_formula | function_application.
+
+function_application    ::= "(" formula formula ")".
+
+conditional_formula     ::= "if" boolean_formula "then" formula "else" formula "fi".
+
+boolean_formula         ::= implication_formula.
+
+specialBool_formula     ::= conditionalBool_formula | comparison_formula.
+
+comparison_formula      ::= integer_formula "LESSTHAN" integer_formula
+                        |   integer_formula "GREATERTHAN" integer_formula.
+
+conditionalBool_formula ::= "if" boolean_formula "then" boolean_formula "else" boolean_formula "fi".
+
+implication_formula     ::= binaryBool_formula "IMPLIES" implication_formula
+                        |   binaryBool_formula.
+
+binaryBool_formula      ::= binaryBool_formula BINOP_bool not_formula
+                        |   integer_formula "EQUALS" integer_formula
+                        |   not_formula.
+
+not_formula             ::= "NOT" not_formula
+                        |   bool_operand.
+
+bool_operand            ::= "TRUE" | "FALSE" | ID | "(" boolean_formula ")" | specialBool_formula.
+
+BINOP_bool              ::= "AND" | "OR" | "XOR" | "EQUALS". 
+
+integer_formula         ::= addition_formula.
+
+conditionalInt_formula  ::= "if" boolean_formula "then" integer_formula "else" integer_formula "fi".
+
+addition_formula        ::= addition_formula "PLUS" product_formula
+                        |   addition_formula "MINUS" product_formula
+                        |   product_formula.
+                        
+product_formula         ::= product_formula "TIMES" negate_formula
+                        |   negate_formula.
+                        
+negate_formula          ::= "NEGATE" negate_formula
+                        |   integer_operand.
+                        
+integer_operand         ::= NUM | ID | "(" integer_formula ")" | conditionalInt_formula.
+
+NUM                     ::= num {num}.
+
+ID                      ::= (alpha {alphaNum}) - KEYWORDS.
+
+alphaNum                ::= alpha | num
+
+alpha                   ::= "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r"
+                        |   "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" | "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" 
+                        |   "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z".
+
+num                     ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9".
+
+KEYWORDS                ::= "NOT" | "AND" | "OR" | "XOR" | "EQUALS" | "IMPLIES" | "if" | "then" | "else" | "fi" | "PLUS" | "MINUS" | "TIMES"
+                        |   "NEGATE" | "LESSTHAN" | "GREATERTHAN" | "let" | "in" | "end" | "fn" | "fun" | "int" | "bool" | "TRUE" | "FALSE".
+					

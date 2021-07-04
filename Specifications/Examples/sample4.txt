@@ -1,0 +1,10 @@
+fun x(y:int):int => 0;
+
+let 
+	f = fn (y:int->int) : int => (y (y 5)) 
+in
+	let g = fn (f:int) : int => f TIMES f PLUS f
+	in
+		(f g)
+	end	
+end
