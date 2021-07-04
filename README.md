@@ -4,7 +4,7 @@
 ---
 ### About: 
 
-This project involves building a toy programming language that is capable of evaluating and type-checking a set of statements which may be boolean/arithmetic expressions, variable instantiations and function declaration/application upto a single formal parameter. The language also supports lambda expressions and uses **call-by value** method for function application.
+This project involves building a toy programming language that is capable of evaluating and type-checking a set of statements which may be boolean/arithmetic expressions, variable instantiations and function declaration/application upto a single formal parameter. The language also supports lambda expressions and uses **call-by value** and **definition before usage** method for function application.
 
 ---
 
