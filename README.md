@@ -16,7 +16,7 @@ Refer to *Specifications* folder to know more about the language syntax and usag
 
 ### Instructions to execute a program:
 - Generate the parser/evaluator/type-checker by executing the command `make` or `make all` in the terminal.
-- To run a program file named <file>, execute the command `./parser <file>` in the terminal. This will parse, evaluate and type-check the file named <file>.
+- To run a program file named <file>, execute the command `./parser <file>` in the terminal. This will parse, evaluate and type-check the file named `<file>`.
 > NOTE: `mlton` (along with `mllex` and `mlyacc`) should be available for proper execution of makefile.   
 > NOTE: The parser creates three auxilliary files named *Yes*, *Error* and *lastToken*. These files are used for reporting syntax error raised by the parser.
 
