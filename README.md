@@ -1,4 +1,4 @@
-# Boolean Parser
+# Boolean Parser | ML-Lex, ML-Yacc
 ## Assignment of course COL226, Spring 2021
 
 ---
