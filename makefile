@@ -4,7 +4,7 @@ LEX = mllex
 
 YCC = mlyacc
 
-NAME = a3
+NAME = parser
 
 BOOL = boolean
 
